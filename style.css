@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300|Open:100|Inconsolata:400');
+
+html, body {
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	background: url(night_blur.jpg) no-repeat center center fixed;
+	background-size: cover;
+	color: white;
+	font-family: 'Open Sans', sans-serif;
+	transition: background-image 0.4s;
+}
+
+h1 {
+	font-weight: lighter;
+	font-size: 40px;
+	margin-bottom: 0;
+}
+
+a {
+	color: #dddddd;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #ffffff;
+}
+
+.time {
+	display: inline-block;
+	font-size: 100px;
+}
+
+.until {
+	margin-top: 24px;
+	display: inline-block;
+	font-size: 30px;
+}
+
+.timeleft, .remaining {
+	display: inline-block;
+	vertical-align: middle;
+	height: 100%;
+}
+
+.timeleft {
+	text-align: right;
+	padding-right: 8px;
+	border-right: 1px solid #dddddd;
+}
+
+.remaining {
+	text-align: left;
+}
+
+.hour::after {
+	content:"h";
+	color: #aaaaaa;
+}
+.minute::after {
+	content:"m";
+	color: #aaaaaa;
+}
+.second::after {
+	content:"s";
+	color: #aaaaaa;
+}
+
+.big-hour::after {
+	content:":";
+	color: #ffffff;
+}
+.big-minute::after {
+	content:":";
+	color: #ffffff;
+}
+.big-second::after {
+	content:"";
+	color: #ffffff;
+}
+
+.time > span {
+	display: inline-block;
+}
+
+.day {
+	color: #eeee33;
+}
+
+.night {
+	color: #8888ff;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	height: 100%;
+	margin-bottom: 0;
+}
+
+.time-container {
+	text-align: center;
+}
+
+.until-container {
+	text-align: center;
+}
+
+.description-container {
+	text-align: center;
+	margin-bottom: 40px;
+	font-family: "Inconsolata", monospace;
+	color: #aaaaaa;
+}
+
+@media(min-width: 768px) {
+	.container {
+		width: 900px;
+		margin: auto;
+	}
+}

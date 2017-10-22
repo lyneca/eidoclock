@@ -2,21 +2,44 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<link href='style.css' rel='stylesheet'>
+	<script src='https://code.jquery.com/jquery-3.2.1.slim.min.js'></script>
+	<script src='clock.js'></script>
 	<title></title>
 </head>
 <body>
 	<div class="container">
 		<div class="time-container">
+			<h1>Time on Plains</h1>
 			<span class="time">
-				10:00pm
+				<span class="big-hour"></span><span class="big-minute"></span><span class="big-second"></span>
 			</span>
 		</div>
 		<div class="until-container">
+			<h1>Time until <span class="night">night</span></h1>
 			<span class="until">
-				2 hours / 12.5 minutes
+				<div class="timeleft">
+					<div class="hms eidolon">
+						<span class="eidolon hour">02</span>
+						<span class="eidolon minute">00</span>
+						<span class="eidolon second">00</span>
+					</div>
+					<div class="hms irl">
+						<span class="irl hour">00</span>
+						<span class="irl minute">12</span>
+						<span class="irl second">30</span>
+					</div>
+				</div>
+				<div class="remaining">
+					Eidolon<br>
+					IRL
+				</div>
 			</span>
 		</div>
-		<div class="description"></div>
+		<div class="description-container">
+			Made by <a href="https://reddit.com/u/lyneca">/u/lyneca</a><br>
+			Hosted on <a href="https://github.com/lyneca/eidoclock">GitHub</a>
+		</div>
 	</div>
 </body>
 </html>
