@@ -33,6 +33,7 @@ function updateTime() {
 	
 	var eidotime_in_h = (irltime_m / 6.25) + 6;  // Assuming that 7am is when water demagnetizes
 	if (eidotime_in_h < 0) eidotime_in_h += 24;
+	if (eidotime_in_h > 24) eidotime_in_h -= 24;
 	var eidotime_h = Math.floor(eidotime_in_h);
 	var eidotime_m = Math.floor((eidotime_in_h * 60) % 60);
 	var eidotime_s = Math.floor((eidotime_in_h * 60 * 60) % 60);
