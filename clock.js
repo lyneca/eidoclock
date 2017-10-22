@@ -75,8 +75,8 @@ function updateTime() {
 		}
 	}
 	if (eidotime_h == 22) has_notified = false;
-
 	var eido_until_h = next_interval - (eidotime_h % 24);
+	if (eido_until_h < 0) eido_until_h += 24
 	var eido_until_m = 60 - eidotime_m;
 	var eido_until_s = 60 - eidotime_s;
 
