@@ -60,6 +60,7 @@ function updateTime() {
 		$('.day').text('day');
 		next_interval = 24 + 5;
 	}
+	$('body').css('background-size', "cover");
 
 	if (eidotime_h == 21 && minute == 30) {
 		if (!has_notified) {
