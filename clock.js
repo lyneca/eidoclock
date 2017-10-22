@@ -89,3 +89,7 @@ function updateTime() {
 }
 
 setInterval(updateTime, 1);
+
+function showAbout() {
+
+}
