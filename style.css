@@ -125,3 +125,14 @@ a:hover {
 		margin: auto;
 	}
 }
+
+.about {
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.8);
+	border-radius: 5px;
+	padding: 5px;
+	text-align: center;
+	left: 50%;
+	top: 20%;
+    transform: translate(-50%, 0);
+}

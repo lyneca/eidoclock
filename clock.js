@@ -1,6 +1,7 @@
 has_notified = false;
 
 document.addEventListener('DOMContentLoaded', function () {
+	$('.about').hide();
   if (!Notification) {
     alert('Desktop notifications not available in your browser. Try Chromium.'); 
     return;
@@ -89,7 +90,3 @@ function updateTime() {
 }
 
 setInterval(updateTime, 1);
-
-function showAbout() {
-
-}

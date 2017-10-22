@@ -8,6 +8,20 @@
 	<title>Plains of Eidolon Clock</title>
 </head>
 <body>
+	<div class="about">
+		This is a clock for Warframe's Plains of Eidolon Landscape expansion.<br>
+		PoE's in-game day/night cycle has 100 minutes of day, and 50 minutes of night.<br>
+		Since the whole cycle (150 minutes) is not an easy percentage or multiple of our 60-minute hours,
+		it can be difficult to keep track of the time, and there is no in-game clock.<br>
+		The site will also attempt to notify you when the Eidolons appear in the Plains.<br>
+		Each Eidolon hour is 6.25 minutes of real time.<br>
+		<br>
+		It is synchronised to within a minute of the Warframe servers (as they only provide minute-level resolution).
+	</div>
+	<!-- <div class="sidebar"> -->
+		<!-- Day: 5:00 - 21:00 -->
+		<!-- Night: 21:00 - 5:00 -->
+	<!-- </div> -->
 	<div class="container">
 		<div class="time-container">
 			<h1>Time on Plains</h1>
@@ -39,7 +53,7 @@
 		<div class="description-container">
 			Made by <a href="https://reddit.com/u/lyneca">/u/lyneca</a><br>
 			Hosted on <a href="https://github.com/lyneca/eidoclock">GitHub</a><br>
-			<a href="" onclick="showAbout()">Explain?</a>
+			<a href="#" onclick="$('.about').toggle(1000, function() {})">Explain?</a>
 		</div>
 	</div>
 </body>
