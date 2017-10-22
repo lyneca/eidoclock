@@ -94,4 +94,4 @@ function updateTime() {
 	$('.irl .second').text(pad(irl_until_s));
 }
 
-setInterval(updateTime, 1);
+var interval = setInterval(updateTime, 1);
