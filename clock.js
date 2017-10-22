@@ -31,7 +31,7 @@ function updateTime() {
 	var start_time = 1508636730;  // Set this to the IRL unix time as soon as water demagnetizes
 	var irltime_m = (time - start_time)/60 % 9000;  // 100m of day + 50m of night
 	
-	var eidotime_in_h = (irltime_m / 6.25) + 5;  // Assuming that 7am is when water demagnetizes
+	var eidotime_in_h = (irltime_m / 6.25) + 6;  // Assuming that 7am is when water demagnetizes
 	if (eidotime_in_h < 0) eidotime_in_h += 24;
 	var eidotime_h = Math.floor(eidotime_in_h);
 	var eidotime_m = Math.floor((eidotime_in_h * 60) % 60);
