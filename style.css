@@ -6,7 +6,8 @@ html, body {
 }
 
 body {
-	background: url(night_blur.jpg) no-repeat center center fixed;
+	/* background: url(night_blur.jpg) no-repeat center center fixed; */
+	background: white no-repeat center center fixed;
 	background-size: cover;
 	color: white;
 	font-family: 'Open Sans', sans-serif;
