@@ -160,10 +160,10 @@ a:hover {
 	right: 2px;
 	top: 5%;
 	margin-top: 6px;
-	width: 10px;
+	width: 9px;
 	height: 10px;
 	border-radius: 0 3px 3px 0;
-	background-color: white;
+	background-color: transparent;
 }
 .slider::before {
 	content:"";
