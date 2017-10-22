@@ -29,10 +29,10 @@ function pad(s) {
 function updateTime() {
 	var d = new Date();
 	var time = d.getTime() / 1000;
-	var start_time = 1508636310;  // Set this to the IRL unix time as soon as water demagnetizes
-	var irltime_m = (time - start_time)/60 % 9000;  // 100m of day + 50m of night
+	var start_time = 1508636310;
+	var irltime_m = (time - start_time)/60 % 150;  // 100m of day + 50m of night
 	
-	var eidotime_in_h = (irltime_m / 6.25) + 6;  // Assuming that 7am is when water demagnetizes
+	var eidotime_in_h = (irltime_m / 6.25) + 6;
 	if (eidotime_in_h < 0) eidotime_in_h += 24;
 	if (eidotime_in_h > 24) eidotime_in_h -= 24;
 	var eidotime_h = Math.floor(eidotime_in_h);
@@ -43,6 +43,11 @@ function updateTime() {
 	$('.time>.big-minute').text(pad(eidotime_m));
 	$('.time>.big-second').text(pad(eidotime_s));
 	$('.time>.ampm').text(((eidotime_in_h >= 12) ? ' pm' : ' am'));
+
+	var wrapped_time = eidotime_in_h - 5;
+	if (wrapped_time < 0) wrapped_time += 24;
+	var slider_percent = wrapped_time / 24 * 90 + 5
+	$('.slider').css('top', slider_percent + '%');
 
 	var next_interval;
 
@@ -59,7 +64,7 @@ function updateTime() {
 		$('body').css('background', "url(night_blur.jpg) no-repeat center center fixed");
 		$('.night').addClass('day').removeClass('night');
 		$('.day').text('day');
-		next_interval = 24 + 5;
+		next_interval = 5;
 	}
 	$('body').css('background-size', "cover");
 
@@ -71,7 +76,7 @@ function updateTime() {
 	}
 	if (eidotime_h == 22) has_notified = false;
 
-	var eido_until_h = next_interval - eidotime_h;
+	var eido_until_h = next_interval - (eidotime_h % 24);
 	var eido_until_m = 60 - eidotime_m;
 	var eido_until_s = 60 - eidotime_s;
 
