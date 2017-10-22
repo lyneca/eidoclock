@@ -1,3 +1,5 @@
+has_notified = false;
+
 document.addEventListener('DOMContentLoaded', function () {
   if (!Notification) {
     alert('Desktop notifications not available in your browser. Try Chromium.'); 
@@ -12,7 +14,7 @@ function notify(string) {
   if (Notification.permission !== "granted")
     Notification.requestPermission();
   else {
-    var notification = new Notification('Notification title', {
+    var notification = new Notification('The Eidoclock', {
       icon: '',
       body: string
     });
@@ -57,6 +59,14 @@ function updateTime() {
 		$('.day').text('day');
 		next_interval = 24 + 5;
 	}
+
+	if (eidotime_h == 21 && minute == 30) {
+		if (!has_notified) {
+			notify("Eidolons are spawning!");
+			has_notified = true;
+		}
+	}
+	if (eidotime_h == 22) has_notified = false;
 
 	var eido_until_h = next_interval - eidotime_h;
 	var eido_until_m = 60 - eidotime_m;
