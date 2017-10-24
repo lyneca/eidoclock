@@ -68,7 +68,7 @@ function updateTime() {
 	}
 	$('body').css('background-size', "cover");
 
-	if (eidotime_h == 21 && minute == 30) {
+	if (eidotime_h == 21 && eidotime_m == 30) {
 		if (!has_notified) {
 			notify("Eidolons are spawning!");
 			has_notified = true;
