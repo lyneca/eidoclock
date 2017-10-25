@@ -39,11 +39,6 @@ function updateTime() {
 	var eidotime_m = Math.floor((eidotime_in_h * 60) % 60);
 	var eidotime_s = Math.floor((eidotime_in_h * 60 * 60) % 60);
 
-	$('.time>.big-hour').text(pad(eidotime_h));
-	$('.time>.big-minute').text(pad(eidotime_m));
-	$('.time>.big-second').text(pad(eidotime_s));
-	$('.time>.ampm').text(((eidotime_in_h >= 12) ? ' pm' : ' am'));
-
 	var wrapped_time = eidotime_in_h - 5;
 	if (wrapped_time < 0) wrapped_time += 24;
 	var slider_percent = wrapped_time / 24 * 90 + 5
@@ -85,13 +80,19 @@ function updateTime() {
 	var irl_until_m = Math.floor((irl_until_in_h * 60) % 60);
 	var irl_until_s = Math.floor((irl_until_in_h * 60 * 60) % 60);
 	
-	$('.eidolon .hour').text(pad(eido_until_h));
-	$('.eidolon .minute').text(pad(eido_until_m));
-	$('.eidolon .second').text(pad(eido_until_s));
+	$('.time>.big-hour').text(pad(irl_until_h));
+	$('.time>.big-minute').text(pad(irl_until_m));
+	$('.time>.big-second').text(pad(irl_until_s));
 
-	$('.irl .hour').text(pad(irl_until_h));
-	$('.irl .minute').text(pad(irl_until_m));
-	$('.irl .second').text(pad(irl_until_s));
+	$('.eidolon .hour').text(pad(eidotime_h));
+	$('.eidolon .minute').text(pad(eidotime_m));
+	$('.eidolon .second').text(pad(eidotime_s));
+
+	$('.irl .hour').text(pad(eido_until_h));
+	$('.irl .minute').text(pad(eido_until_m));
+	$('.irl .second').text(pad(eido_until_s));
+
+	// $('.time>.ampm').text(((eidotime_in_h >= 12) ? ' pm' : ' am'));
 }
 
 var interval = setInterval(updateTime, 1);
