@@ -119,13 +119,6 @@ a:hover {
 	color: #aaaaaa;
 }
 
-@media(min-width: 768px) {
-	.container {
-		width: 900px;
-		margin: auto;
-	}
-}
-
 .about {
 	position: absolute;
 	background-color: rgba(0, 0, 0, 0.8);
@@ -188,3 +181,41 @@ a:hover {
 .day-start { top: 5%; }
 .night-start { top: 65%; }
 .eidolons { top: 75%; display: none;}
+
+
+@media (min-width:320px)  {
+	/* smartphones, iPhone, portrait 480x320 phones */
+	h1 {
+		font-size: 70px;
+	}
+	.time {
+		font-size: 150px;
+	}
+	.until-container {
+		display: none;
+	}
+}
+@media (min-width:481px)  {
+	/* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
+}
+@media (min-width:641px)  {
+	/* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
+}
+@media (min-width:961px)  {
+	/* tablet, landscape iPad, lo-res laptops ands desktops */
+	h1 {
+		font-size: 40px;
+	}
+	.time {
+		font-size: 120px;
+	}
+	.until-container {
+		display: block;
+	}
+}
+@media (min-width:1025px) {
+	/* big landscape tablets, laptops, and desktops */
+}
+@media (min-width:1281px) {
+	/* hi-res laptops and desktops */
+}
