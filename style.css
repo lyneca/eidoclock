@@ -7,7 +7,7 @@ html, body {
 
 body {
 	/* background: url(night_blur.jpg) no-repeat center center fixed; */
-	background: white no-repeat center center fixed;
+	background: black no-repeat center center fixed;
 	background-size: cover;
 	color: white;
 	font-family: 'Open Sans', sans-serif;
@@ -109,25 +109,26 @@ a:hover {
 }
 
 .until-container {
+	max-height: 0;
 	text-align: center;
+	transition: opacity 0.2s, height 0.2s;
 }
 
 .description-container {
 	text-align: center;
-	margin-bottom: 40px;
 	font-family: "Inconsolata", monospace;
 	color: #aaaaaa;
+	margin-top: auto;
+	margin-bottom: 30px;
 }
 
 .about {
 	position: absolute;
-	background-color: rgba(0, 0, 0, 0.8);
 	border-radius: 5px;
 	padding: 5px;
 	text-align: center;
-	left: 50%;
-	top: 20%;
-    transform: translate(-50%, 0);
+	left: 0%;
+	bottom: 0%;
 }
 
 .sidebar {
@@ -225,3 +226,75 @@ a:hover {
 @media (min-width:1281px) {
 	/* hi-res laptops and desktops */
 }
+
+/* shamelessly taken from w3schools */
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 24px;
+}
+
+.switch input {display:none;}
+
+.knob {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(200, 200, 200, 0.4);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.knob:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .knob {
+  background-color: rgba(33, 150, 243, 0.4);
+}
+
+input:focus + .knob {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .knob:before {
+  -webkit-transform: translateX(16px);
+  -ms-transform: translateX(16px);
+  transform: translateX(16px);
+}
+
+.knob.round {
+  border-radius: 34px;
+}
+
+.knob.round:before {
+  border-radius: 50%;
+}
+
+.option {
+	text-align: left;
+	vertical-align: top;
+	height: 30px;
+}
+
+.option-text {
+	margin-left: 10px;
+}
+
+.option-switch {
+	float: left;
+}
+

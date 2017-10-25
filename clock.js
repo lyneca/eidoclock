@@ -1,7 +1,8 @@
-has_notified = false;
+var has_notified = false;
+var nice_background = true;
+var simple_layout = false;
 
 document.addEventListener('DOMContentLoaded', function () {
-	$('.about').hide();
   if (!Notification) {
     alert('Desktop notifications not available in your browser. Try Chromium.'); 
     return;
@@ -27,6 +28,14 @@ function pad(s) {
 }
 
 function updateTime() {
+	nice_background = $('#background').is(':checked');
+	simple_layout = $('#simple').is(':checked');
+	if (simple_layout) {
+		$('.until-container').css('opacity', 1);
+	} else {
+		$('.until-container').css('opacity', 0);
+	}
+
 	var d = new Date();
 	var time = d.getTime() / 1000;
 	var start_time = 1508636310;
@@ -50,13 +59,23 @@ function updateTime() {
 	// Day is from 5am to 9pm
 	if (eidotime_in_h >= 5 && eidotime_in_h < 21) {
 		// Time is day
-		$('body').css('background', "url(day_blur.jpg) no-repeat center center fixed");
+		if (nice_background) {
+			$('body').css('background', "url(day_blur.jpg) no-repeat center center fixed");
+		} else {
+			$('body').css('background-image', "none");
+			$('body').css('background-color', "black");
+		}
 		$('.day').addClass('night').removeClass('day');
 		$('.night').text('night');
 		next_interval = 21;
 	} else {
 		// Time is night
-		$('body').css('background', "url(night_blur.jpg) no-repeat center center fixed");
+		if (nice_background) {
+			$('body').css('background', "url(night_blur.jpg) no-repeat center center fixed");
+		} else {
+			$('body').css('background', "black");
+			$('body').css('color', "white");
+		}
 		$('.night').addClass('day').removeClass('night');
 		$('.day').text('day');
 		next_interval = 5;

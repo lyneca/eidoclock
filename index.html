@@ -3,20 +3,30 @@
 <head>
 	<meta charset="UTF-8">
 	<link href='style.css' rel='stylesheet'>
-	<script src='https://code.jquery.com/jquery-3.2.1.slim.min.js'></script>
+	<script src='jquery-3.2.1.slim.min.js'></script>
 	<script src='clock.js'></script>
 	<title>Plains of Eidolon Clock</title>
 </head>
 <body>
 	<div class="about">
-		This is a clock for Warframe's Plains of Eidolon Landscape expansion.<br>
-		PoE's in-game day/night cycle has 100 minutes of day, and 50 minutes of night.<br>
-		Since the whole cycle (150 minutes) is not an easy percentage or multiple of our 60-minute hours,
-		it can be difficult to keep track of the time, and there is no in-game clock.<br>
-		The site will also attempt to notify you when the Eidolons appear in the Plains.<br>
-		Each Eidolon hour is 6.25 minutes of real time.<br>
-		<br>
-		It is synchronised to within a minute of the Warframe servers (as they only provide minute-level resolution).
+		<div class="option">
+			<span class="option-switch">
+				<label class="switch">
+					<input type="checkbox" checked="true" id="background">
+					<span class="knob round"></span>
+				</label>
+			</span>
+			<span class="option-text">Pretty background</span>
+		</div>
+		<div class="option">
+			<span class="option-switch">
+				<label class="switch">
+					<input type="checkbox" checked="true" id="simple">
+					<span class="knob round"></span>
+				</label>
+			</span>
+			<span class="option-text">Show scaled time</span>
+		</div>
 	</div>
 	<div class="sidebar">
 		<div class="slider"></div>
@@ -59,11 +69,10 @@
 				</div>
 			</span>
 		</div>
-		<div class="description-container">
-			Made by <a href="https://reddit.com/u/lyneca">/u/lyneca</a><br>
-			Hosted on <a href="https://github.com/lyneca/eidoclock">GitHub</a><br>
-			<a href="#" onclick="$('.about').toggle(1000, function() {})">Explain?</a>
-		</div>
+	<div class="description-container">
+		Made by <a href="https://reddit.com/u/lyneca">/u/lyneca</a><br>
+		Hosted on <a href="https://github.com/lyneca/eidoclock">GitHub</a><br>
+	</div>
 	</div>
 </body>
 </html>
