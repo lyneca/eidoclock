@@ -38,8 +38,9 @@ function updateTime() {
 
 	var d = new Date();
 	var time = d.getTime() / 1000;
-	var start_time = 1508636310;
-	var irltime_m = (time - start_time)/60 % 150;  // 100m of day + 50m of night
+    // This time is the end of night and start of day
+    var start_time = (1510894634 - 150 * 60) + 7 * 60 + 18
+	var irltime_m = ((time - start_time)/60) % 150;  // 100m of day + 50m of night
 	
 	var eidotime_in_h = (irltime_m / 6.25) + 6;
 	if (eidotime_in_h < 0) eidotime_in_h += 24;
@@ -57,7 +58,7 @@ function updateTime() {
 
 	// Night is from 9pm to 5am
 	// Day is from 5am to 9pm
-	if (eidotime_in_h >= 5 && eidotime_in_h < 21) {
+	if (150 - irltime_m > 50) {
 		// Time is day
 		if (nice_background) {
 			$('body').css('background', "url(day_blur.jpg) no-repeat center center fixed");
@@ -95,9 +96,18 @@ function updateTime() {
 	var eido_until_s = 60 - eidotime_s;
 
 	var irl_until_in_h = ((eido_until_h + eido_until_m / 60 + eido_until_s / 60 / 60) * 6.25) / 60;
-	var irl_until_h = Math.floor(irl_until_in_h);
-	var irl_until_m = Math.floor((irl_until_in_h * 60) % 60);
-	var irl_until_s = Math.floor((irl_until_in_h * 60 * 60) % 60);
+
+    var irl_until_in_m = 150 - irltime_m;
+
+    if (irl_until_in_m > 50) irl_until_in_m -= 50 
+
+	var irl_until_h = Math.floor(irl_until_in_m / 60);
+	var irl_until_m = Math.floor(irl_until_in_m % 60);
+	var irl_until_s = Math.floor((irl_until_in_m * 60) % 60);
+
+	// var irl_until_h = Math.floor(irl_until_in_h);
+	// var irl_until_m = Math.floor((irl_until_in_h * 60) % 60);
+	// var irl_until_s = Math.floor((irl_until_in_h * 60 * 60) % 60);
 	
 	$('.time>.big-hour').text(pad(irl_until_h));
 	$('.time>.big-minute').text(pad(irl_until_m));

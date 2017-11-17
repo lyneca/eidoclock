@@ -86,12 +86,12 @@ a:hover {
 	display: inline-block;
 }
 
-.day {
+.time-container>h1>.day {
 	color: #eeee33;
 }
 
-.night {
-	color: #8888ff;
+.time-container>h1>.night {
+	color: #000077;
 }
 
 .container {
