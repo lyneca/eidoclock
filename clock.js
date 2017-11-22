@@ -93,7 +93,7 @@ function updateTime() {
             if (first_run) {
                 first_run = false;
             } else {
-                notify("It is day!");
+                notify("It is night!");
                 eidolon_sound.play();
             }
         }
