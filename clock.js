@@ -12,6 +12,13 @@ document.addEventListener('DOMContentLoaded', function () {
     Notification.requestPermission();
 });
 
+var eidolon_sound = new Audio('eidolon.mp3');
+var door_sound = new Audio('door.wav');
+// eidolon_sound.play()
+var has_played_night = false;
+var has_played_day = false;
+var first_run = true;
+
 function notify(string) {
   if (Notification.permission !== "granted")
     Notification.requestPermission();
@@ -39,7 +46,7 @@ function updateTime() {
 	var d = new Date();
 	var time = d.getTime() / 1000;
     // This time is the end of night and start of day
-    var start_time = (1510894634 - 150 * 60) + 7 * 60 + 18
+    var start_time = (1510894634 - 150 * 60) + 7 * 60 + 18;
 	var irltime_m = ((time - start_time)/60) % 150;  // 100m of day + 50m of night
 	
 	var eidotime_in_h = (irltime_m / 6.25) + 6;
@@ -59,6 +66,15 @@ function updateTime() {
 	// Night is from 9pm to 5am
 	// Day is from 5am to 9pm
 	if (150 - irltime_m > 50) {
+        if (!has_played_day) {
+            has_played_night = false;
+            has_played_day = true;
+            if (first_run) {
+                first_run = false;
+            } else {
+                notify("It is day!");
+            }
+        }
 		// Time is day
 		if (nice_background) {
 			$('body').css('background', "url(day_blur.jpg) no-repeat center center fixed");
@@ -71,6 +87,16 @@ function updateTime() {
 		next_interval = 21;
 	} else {
 		// Time is night
+        if (!has_played_night) {
+            has_played_night = true;
+            has_played_day = false;
+            if (first_run) {
+                first_run = false;
+            } else {
+                notify("It is day!");
+                eidolon_sound.play();
+            }
+        }
 		if (nice_background) {
 			$('body').css('background', "url(night_blur.jpg) no-repeat center center fixed");
 		} else {
@@ -83,12 +109,6 @@ function updateTime() {
 	}
 	$('body').css('background-size', "cover");
 
-	if (eidotime_h == 21 && eidotime_m == 30) {
-		if (!has_notified) {
-			notify("Eidolons are spawning!");
-			has_notified = true;
-		}
-	}
 	if (eidotime_h == 22) has_notified = false;
 	var eido_until_h = next_interval - (eidotime_h % 24);
 	if (eido_until_h < 0) eido_until_h += 24
