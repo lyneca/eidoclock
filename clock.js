@@ -46,7 +46,7 @@ function updateTime() {
 	var d = new Date();
 	var time = d.getTime() / 1000;
     // This time is the end of night and start of day
-    	var start_time = 1510885052;
+    	var start_time = 1510884902;	//Correct as of 2018-02-12
 	var irltime_m = ((time - start_time)/60) % 150;  // 100m of day + 50m of night
 	
 	var eidotime_in_h = (irltime_m / 6.25) + 6;
