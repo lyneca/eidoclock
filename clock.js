@@ -1,6 +1,12 @@
 var has_notified = false;
 var nice_background = true;
 var simple_layout = false;
+var eido_timestamp = 1510884902;
+
+getCetusTime(1, function(t) {
+    eido_timestamp = t;
+    console.log(eido_timestamp)
+});
 
 document.addEventListener('DOMContentLoaded', function () {
   if (!Notification) {
@@ -34,6 +40,61 @@ function pad(s) {
 	return s.toString();
 }
 
+// Credit to Wampa842 for this
+
+// The first parameter defines the platform (1: PC, 2: PS4, 3: XBO).
+// If it's 0 or undefined, the function won't fetch anything - it'll instead use a static timestamp.
+// I don't think there's any major difference between the platforms' times, you can probably safely use the PC data and remove the unnecessary lines.
+// On success, the time is passed to the callback function. On any error, the callback will receive the static timestamp.
+function getCetusTime(platform, callback)
+{
+	var timestamp = 1510884902;	//Static timestamp to be returned in case of an error. Correct as of 2018-02-13, for PC version 22.12.2. Might not be accurate in the future.
+	if(!platform || (platform > 3))
+	{
+		callback(timestamp);
+		return;
+	}
+
+	var worldStateUrls =
+	[
+		"http://content.warframe.com/dynamic/worldState.php",
+		"http://content.ps4.warframe.com/dynamic/worldState.php",
+		"http://content.xb1.warframe.com/dynamic/worldState.php"
+	];
+
+	var worldStateUrl = "http://www.whateverorigin.org/get?url=" + encodeURIComponent(worldStateUrls[platform-1]) + "&callback=?";
+
+	$.ajax(
+	{
+		url: worldStateUrl,
+		dataType: "json",
+		mimeType: "application/json",
+		success: function(data)
+		{
+			var worldStateData;
+			try
+			{
+				worldStateData = JSON.parse(data.contents); //The data is returned as a string inside a JSON response and has to be parsed.
+			}
+			catch(e)
+			{
+				console.warn("Could not fetch Cetus time (", e.message, "). Using static timestamp. Accuracy not guaranteed.");
+				callback(timestamp);
+				return;
+			}
+			var syndicate = worldStateData["SyndicateMissions"].find(element => (element["Tag"] == "CetusSyndicate"));
+			timestamp = Math.floor(syndicate["Activation"]["$date"]["$numberLong"] / 1000);	//The activation time, converted to whole seconds
+			console.log("Fetched Cetus time: ", timestamp);
+			callback(timestamp);
+		},
+		failure: function(xhr, status, error)
+		{
+			console.warn("Cound not fetch Cetus time:", status, error, ". Using static timestamp. Accuracy not guaranteed.");
+			callback(timestamp);
+		}
+	});
+}
+
 function updateTime() {
 	nice_background = $('#background').is(':checked');
 	simple_layout = $('#simple').is(':checked');
@@ -42,30 +103,29 @@ function updateTime() {
 	} else {
 		$('.until-container').css('opacity', 0);
 	}
-
-	var d = new Date();
-	var time = d.getTime() / 1000;
+    var d = new Date();
+    var time = d.getTime() / 1000;
     // This time is the end of night and start of day
-    var start_time = (1510894634 - 150 * 60) + 7 * 60 + 18;
-	var irltime_m = ((time - start_time)/60) % 150;  // 100m of day + 50m of night
-	
-	var eidotime_in_h = (irltime_m / 6.25) + 6;
-	if (eidotime_in_h < 0) eidotime_in_h += 24;
-	if (eidotime_in_h > 24) eidotime_in_h -= 24;
-	var eidotime_h = Math.floor(eidotime_in_h);
-	var eidotime_m = Math.floor((eidotime_in_h * 60) % 60);
-	var eidotime_s = Math.floor((eidotime_in_h * 60 * 60) % 60);
+    var start_time = (eido_timestamp - 150 * 60)
+    var irltime_m = ((time - start_time)/60) % 150;  // 100m of day + 50m of night
+    
+    var eidotime_in_h = (irltime_m / 6.25) + 6;
+    if (eidotime_in_h < 0) eidotime_in_h += 24;
+    if (eidotime_in_h > 24) eidotime_in_h -= 24;
+    var eidotime_h = Math.floor(eidotime_in_h);
+    var eidotime_m = Math.floor((eidotime_in_h * 60) % 60);
+    var eidotime_s = Math.floor((eidotime_in_h * 60 * 60) % 60);
 
-	var wrapped_time = eidotime_in_h - 5;
-	if (wrapped_time < 0) wrapped_time += 24;
-	var slider_percent = wrapped_time / 24 * 90 + 5
-	$('.slider').css('top', slider_percent + '%');
+    var wrapped_time = eidotime_in_h - 5;
+    if (wrapped_time < 0) wrapped_time += 24;
+    var slider_percent = wrapped_time / 24 * 90 + 5
+    $('.slider').css('top', slider_percent + '%');
 
-	var next_interval;
+    var next_interval;
 
-	// Night is from 9pm to 5am
-	// Day is from 5am to 9pm
-	if (150 - irltime_m > 50) {
+    // Night is from 9pm to 5am
+    // Day is from 5am to 9pm
+    if (150 - irltime_m > 50) {
         if (!has_played_day) {
             has_played_night = false;
             has_played_day = true;
@@ -75,18 +135,18 @@ function updateTime() {
                 notify("It is day!");
             }
         }
-		// Time is day
-		if (nice_background) {
-			$('body').css('background', "url(day_blur.jpg) no-repeat center center fixed");
-		} else {
-			$('body').css('background-image', "none");
-			$('body').css('background-color', "black");
-		}
-		$('.day').addClass('night').removeClass('day');
-		$('.night').text('night');
-		next_interval = 21;
-	} else {
-		// Time is night
+        // Time is day
+        if (nice_background) {
+            $('body').css('background', "url(day_blur.jpg) no-repeat center center fixed");
+        } else {
+            $('body').css('background-image', "none");
+            $('body').css('background-color', "black");
+        }
+        $('.day').addClass('night').removeClass('day');
+        $('.night').text('night');
+        next_interval = 21;
+    } else {
+        // Time is night
         if (!has_played_night) {
             has_played_night = true;
             has_played_day = false;
@@ -97,51 +157,51 @@ function updateTime() {
                 eidolon_sound.play();
             }
         }
-		if (nice_background) {
-			$('body').css('background', "url(night_blur.jpg) no-repeat center center fixed");
-		} else {
-			$('body').css('background', "black");
-			$('body').css('color', "white");
-		}
-		$('.night').addClass('day').removeClass('night');
-		$('.day').text('day');
-		next_interval = 5;
-	}
-	$('body').css('background-size', "cover");
+        if (nice_background) {
+            $('body').css('background', "url(night_blur.jpg) no-repeat center center fixed");
+        } else {
+            $('body').css('background', "black");
+            $('body').css('color', "white");
+        }
+        $('.night').addClass('day').removeClass('night');
+        $('.day').text('day');
+        next_interval = 5;
+    }
+    $('body').css('background-size', "cover");
 
-	if (eidotime_h == 22) has_notified = false;
-	var eido_until_h = next_interval - (eidotime_h % 24);
-	if (eido_until_h < 0) eido_until_h += 24
-	var eido_until_m = 60 - eidotime_m;
-	var eido_until_s = 60 - eidotime_s;
+    if (eidotime_h == 22) has_notified = false;
+    var eido_until_h = next_interval - (eidotime_h % 24);
+    if (eido_until_h < 0) eido_until_h += 24
+    var eido_until_m = 60 - eidotime_m;
+    var eido_until_s = 60 - eidotime_s;
 
-	var irl_until_in_h = ((eido_until_h + eido_until_m / 60 + eido_until_s / 60 / 60) * 6.25) / 60;
+    var irl_until_in_h = ((eido_until_h + eido_until_m / 60 + eido_until_s / 60 / 60) * 6.25) / 60;
 
     var irl_until_in_m = 150 - irltime_m;
 
     if (irl_until_in_m > 50) irl_until_in_m -= 50 
 
-	var irl_until_h = Math.floor(irl_until_in_m / 60);
-	var irl_until_m = Math.floor(irl_until_in_m % 60);
-	var irl_until_s = Math.floor((irl_until_in_m * 60) % 60);
+    var irl_until_h = Math.floor(irl_until_in_m / 60);
+    var irl_until_m = Math.floor(irl_until_in_m % 60);
+    var irl_until_s = Math.floor((irl_until_in_m * 60) % 60);
 
-	// var irl_until_h = Math.floor(irl_until_in_h);
-	// var irl_until_m = Math.floor((irl_until_in_h * 60) % 60);
-	// var irl_until_s = Math.floor((irl_until_in_h * 60 * 60) % 60);
-	
-	$('.time>.big-hour').text(pad(irl_until_h));
-	$('.time>.big-minute').text(pad(irl_until_m));
-	$('.time>.big-second').text(pad(irl_until_s));
+    // var irl_until_h = Math.floor(irl_until_in_h);
+    // var irl_until_m = Math.floor((irl_until_in_h * 60) % 60);
+    // var irl_until_s = Math.floor((irl_until_in_h * 60 * 60) % 60);
+    
+    $('.time>.big-hour').text(pad(irl_until_h));
+    $('.time>.big-minute').text(pad(irl_until_m));
+    $('.time>.big-second').text(pad(irl_until_s));
 
-	$('.eidolon .hour').text(pad(eidotime_h));
-	$('.eidolon .minute').text(pad(eidotime_m));
-	$('.eidolon .second').text(pad(eidotime_s));
+    $('.eidolon .hour').text(pad(eidotime_h));
+    $('.eidolon .minute').text(pad(eidotime_m));
+    $('.eidolon .second').text(pad(eidotime_s));
 
-	$('.irl .hour').text(pad(eido_until_h));
-	$('.irl .minute').text(pad(eido_until_m));
-	$('.irl .second').text(pad(eido_until_s));
+    $('.irl .hour').text(pad(eido_until_h));
+    $('.irl .minute').text(pad(eido_until_m));
+    $('.irl .second').text(pad(eido_until_s));
 
-	// $('.time>.ampm').text(((eidotime_in_h >= 12) ? ' pm' : ' am'));
+    // $('.time>.ampm').text(((eidotime_in_h >= 12) ? ' pm' : ' am'));
 }
 
 var interval = setInterval(updateTime, 1);
