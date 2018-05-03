@@ -42,31 +42,25 @@ function pad(s) {
 
 // Credit to Wampa842 for this
 
-// The first parameter defines the platform (1: PC, 2: PS4, 3: XBO).
-// If it's 0 or undefined, the function won't fetch anything - it'll instead use a static timestamp.
-// I don't think there's any major difference between the platforms' times, you can probably safely use the PC data and remove the unnecessary lines.
-// On success, the time is passed to the callback function. On any error, the callback will receive the static timestamp.
-function getCetusTime(platform, callback)
+// The first parameter defines whether the function should fetch the timestamp.
+// If it's false or undefined, the function won't fetch anything - it'll instead use a static timestamp.
+// On success, the time is passed to the callback function. On any error, the callback will receive the static timestamp and a warning is logged.
+function getCetusTime(fetch, callback)
 {
-	var timestamp = 1510884902;	//Static timestamp to be returned in case of an error. Correct as of 2018-02-13, for PC version 22.12.2. Might not be accurate in the future.
-	if(!platform || (platform > 3))
+	var timestamp = 1522764301;	//Static timestamp to be returned in case of an error. Correct as of 2018-04-03, for PC version 22.17.0.1. Might not be accurate in the future.
+	if(!fetch)
 	{
 		callback(timestamp);
 		return;
 	}
 
-	var worldStateUrls =
-	[
-		"http://content.warframe.com/dynamic/worldState.php",
-		"http://content.ps4.warframe.com/dynamic/worldState.php",
-		"http://content.xb1.warframe.com/dynamic/worldState.php"
-	];
+	var worldStateFileUrl = "http://content.warframe.com/dynamic/worldState.php";
 
-	var worldStateUrl = "http://www.whateverorigin.org/get?url=" + encodeURIComponent(worldStateUrls[platform-1]) + "&callback=?";
+	var worldStateCORSUrl = "https://whatever-origin.herokuapp.com/get?callback=?&url=" + encodeURIComponent(worldStateFileUrl);
 
 	$.ajax(
 	{
-		url: worldStateUrl,
+		url: worldStateCORSUrl,
 		dataType: "json",
 		mimeType: "application/json",
 		success: function(data)
