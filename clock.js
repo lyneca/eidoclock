@@ -1,7 +1,14 @@
 var has_notified = false;
 var nice_background = true;
-var simple_layout = false;
+var scaled_layout = false;
 var eido_timestamp = 1510884902;
+
+var interval;
+
+const PRETTY_KEY = "PRETTY_KEY";
+const SCALED_KEY = "SCALE";
+const SCALED_TIME_INTERVAL = 1;
+const NO_SCALED_TIME_INTERVAL = 100;
 
 getCetusTime(1, function(t) {
     eido_timestamp = t;
@@ -9,6 +16,7 @@ getCetusTime(1, function(t) {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+
   if (!Notification) {
     alert('Desktop notifications not available in your browser. Try Chromium.'); 
     return;
@@ -17,6 +25,39 @@ document.addEventListener('DOMContentLoaded', function () {
   if (Notification.permission !== "granted")
     Notification.requestPermission();
 });
+
+// Configure local storage events and time interval adjustment on simple event.
+$(function() {
+    if(typeof(Storage) !== "undefined")
+    {
+        var b = localStorage.getItem(PRETTY_KEY);
+        nice_background = b === "false" ? false : true;
+
+        b = localStorage.getItem(SCALED_KEY);
+        scaled_layout = b === "false" ? false : true;
+
+        $('#background').prop('checked', nice_background);
+        $('#scale').prop('checked', scaled_layout);
+    }
+
+    $('#background').on('click', function(){
+        nice_background = $('#background').is(':checked');
+        if(typeof(Storage) !== "undefined")
+            localStorage.setItem(PRETTY_KEY, nice_background == true ? "true" : "false");
+    });
+
+    $('#scale').on('click', function(){
+        scaled_layout = $('#scale').is(':checked');
+        if(typeof(Storage) !== "undefined")
+            localStorage.setItem(SCALED_KEY, scaled_layout == true ? "true" : "false");
+
+        // Adjust interval rate on a simple layout so the CPU is used less.
+        clearInterval(interval);
+        interval = setInterval(updateTime, scaled_layout == true ? SCALED_TIME_INTERVAL : NO_SCALED_TIME_INTERVAL);
+    });
+
+    interval = setInterval(updateTime, scaled_layout == true ? SCALED_TIME_INTERVAL : NO_SCALED_TIME_INTERVAL);
+})
 
 var eidolon_sound = new Audio('eidolon.mp3');
 var door_sound = new Audio('door.wav');
@@ -90,9 +131,7 @@ function getCetusTime(fetch, callback)
 }
 
 function updateTime() {
-	nice_background = $('#background').is(':checked');
-	simple_layout = $('#simple').is(':checked');
-	if (simple_layout) {
+	if (scaled_layout) {
 		$('.until-container').css('opacity', 1);
 	} else {
 		$('.until-container').css('opacity', 0);
@@ -198,4 +237,4 @@ function updateTime() {
     // $('.time>.ampm').text(((eidotime_in_h >= 12) ? ' pm' : ' am'));
 }
 
-var interval = setInterval(updateTime, 1);
+
