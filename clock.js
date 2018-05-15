@@ -77,7 +77,7 @@ function getCetusTime(fetch, callback)
 				return;
 			}
 			var syndicate = worldStateData["SyndicateMissions"].find(element => (element["Tag"] == "CetusSyndicate"));
-			timestamp = Math.floor(syndicate["Activation"]["$date"]["$numberLong"] / 1000);	//The activation time, converted to whole seconds
+			timestamp = Math.floor(syndicate["Expiry"]["$date"]["$numberLong"] / 1000);	//The activation time, converted to whole seconds
 			console.log("Fetched Cetus time: ", timestamp);
 			callback(timestamp);
 		},
