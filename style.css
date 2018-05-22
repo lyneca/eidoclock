@@ -30,6 +30,13 @@ h1 {
 	margin-bottom: 0;
 }
 
+.warning-message
+{
+	font-weight: lighter;
+	margin-top: -20px;
+	color: #FF0000;
+}
+
 a {
 	color: #dddddd;
 	text-decoration: none;

@@ -9,11 +9,15 @@ const PRETTY_KEY = "PRETTY_KEY";
 const SCALED_KEY = "SCALE";
 const SCALED_TIME_INTERVAL = 1;
 const NO_SCALED_TIME_INTERVAL = 100;
+const WARNING_MESSAGE = "Warning: unable to get time. Retrying soon.";
 
-getCetusTime(1, function(t) {
+function defaultGetTimeCallback(t)
+{
     eido_timestamp = t;
-    console.log(eido_timestamp)
-});
+    console.log(eido_timestamp);
+}
+
+getCetusTime(1, defaultGetTimeCallback);
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -81,6 +85,22 @@ function pad(s) {
 	return s.toString();
 }
 
+/**
+ * @brief Sets the message that cetus time failed to be gotten and sets timeout to try again.
+ * @param {bool} hasIssue True if time failed to be gotten, false otherwise 
+ */
+function setTimeFailure(hasIssue)
+{
+    var e = document.getElementById("warning-container");
+    if(hasIssue)
+    {
+        e.innerHTML = WARNING_MESSAGE;
+        setTimeout(getCetusTime, 30000, true, defaultGetTimeCallback);
+    }
+    else
+        e.innerHTML = "";
+}
+
 // Credit to Wampa842 for this
 
 // The first parameter defines whether the function should fetch the timestamp.
@@ -114,17 +134,26 @@ function getCetusTime(fetch, callback)
 			catch(e)
 			{
 				console.warn("Could not fetch Cetus time (", e.message, "). Using static timestamp. Accuracy not guaranteed.");
-				callback(timestamp);
+                callback(timestamp);
+                setTimeFailure(true);
 				return;
-			}
-			var syndicate = worldStateData["SyndicateMissions"].find(element => (element["Tag"] == "CetusSyndicate"));
+            }
+            var syndicate = worldStateData["SyndicateMissions"].find(element => (element["Tag"] == "CetusSyndicate"));
+            if(syndicate == undefined)
+            {
+                setTimeFailure(true);
+                callback(timestamp);
+                return;
+            }
+            setTimeFailure(false);
 			timestamp = Math.floor(syndicate["Expiry"]["$date"]["$numberLong"] / 1000);	//The activation time, converted to whole seconds
 			console.log("Fetched Cetus time: ", timestamp);
 			callback(timestamp);
 		},
 		failure: function(xhr, status, error)
 		{
-			console.warn("Cound not fetch Cetus time:", status, error, ". Using static timestamp. Accuracy not guaranteed.");
+            console.warn("Cound not fetch Cetus time:", status, error, ". Using static timestamp. Accuracy not guaranteed.");
+            setTimeFailure(true);
 			callback(timestamp);
 		}
 	});
