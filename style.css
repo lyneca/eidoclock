@@ -148,7 +148,7 @@ a:hover {
 	bottom: 0%;
 }
 
-.sidebar {
+.current-sidebar {
 	position: absolute;
 	right: 0;
 	padding: 0 10px;
@@ -166,6 +166,7 @@ a:hover {
 	bottom: 0;
 	right: 10px;
 }
+
 .slider {
 	position: absolute;
 	right: 2px;
@@ -176,6 +177,7 @@ a:hover {
 	border-radius: 0 3px 3px 0;
 	background-color: transparent;
 }
+
 .slider::before {
 	content:"";
 	position: absolute;
@@ -200,6 +202,54 @@ a:hover {
 .night-start { top: 65%; }
 .eidolons { top: 75%; display: none;}
 
+.cycles-sidebar {
+	position: absolute;
+	left: 0;
+	padding: 0 10px;
+	text-align: left;
+	width: 30%;
+	height: 50%;
+}
+
+.cycles-sidebar .timeline {
+	position: absolute;
+	width: 1px;
+	background-color: white;
+	margin: 10px;
+	top: 0;
+	bottom: 0;
+	left: 10px;
+}
+
+.marker {
+	position: absolute;
+	left: 2px;
+	top: 5%;
+	margin-top: 6px;
+	width: 9px;
+	height: 10px;
+	border-radius: 0 3px 3px 0;
+	background-color: transparent;
+}
+
+.marker::before {
+	content:"";
+	position: absolute;
+	left: 100%;
+	top: 0px;
+	width: 0px;
+	height: 0px;
+	border-top: 5px solid transparent;
+	border-left: 10px solid white;
+	border-bottom: 5px solid transparent;
+}
+
+.future-day-start,
+.future-night-start {
+	position: absolute;
+	left: 30px;
+	background-color: transparent;
+}
 
 @media (min-width:320px)  {
 	/* smartphones, iPhone, portrait 480x320 phones */
