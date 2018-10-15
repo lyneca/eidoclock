@@ -3,19 +3,19 @@ var nice_background = true;
 var daynight_cycles = true;
 var scaled_layout = false;
 var eido_timestamp = 1510884902;
-var debug = false;
+var paused = false;
 
 var interval;
 
 const PRETTY_KEY = "PRETTY_KEY";
 const CYCLES_KEY = "CYCLES_KEY";
 const SCALED_KEY = "SCALE";
-const SCALED_TIME_INTERVAL = 1;
+const SCALED_TIME_INTERVAL = 10;
 const NO_SCALED_TIME_INTERVAL = 100;
 const WARNING_MESSAGE = "Warning: unable to get time. Retrying soon.";
 
-function debugclock(enabled) {
-    debug = enabled;
+function pauseclock(enabled) {
+    paused = enabled;
 }
 
 function defaultGetTimeCallback(t)
@@ -78,17 +78,14 @@ $(function() {
     });
 
     interval = setInterval(updateTime, scaled_layout == true ? SCALED_TIME_INTERVAL : NO_SCALED_TIME_INTERVAL);
-})
-
-$(function() {
-    console.log('create future day/night markers');
-    var now = new Date();
-    calculateIrlDayNightTimes(now);
+    $('body').css('background-size', "cover");
 })
 
 // Register for a custom event
 $(document).on("clock-event", function(event, data) {
     console.log("It is now", data.cycle);
+    var now = new moment();
+    updateNextIrlDayNightTimes(now, data.minutes);
 });
 
 var eidolon_sound = new Audio('eidolon.mp3');
@@ -187,35 +184,34 @@ function getCetusTime(fetch, callback)
 	});
 }
 
-function calculateIrlDayNightTimes(now) {
-    console.log('now', now);
+function updateNextIrlDayNightTimes(now, minutes) {
+    var nextNights = calculateNextIrlDayNightTimes(now, minutes);
+    // Clear out any existing
+    $('.cycles-sidebar>.future-night-start').remove();
+    // Add the new ones
+    nextNights.forEach(function(element, index, array) {
+        var id = 'next-night-' + index;
+        $('.cycles-sidebar>.future-night-label').after('<div id="' + id + '" class="future-night-start">' + element.format('MMM DD, h:mm a') + '</div>');
+        $('#' + id).css('top', ((index+1)*8+5)  + '%').css('opacity', (100+array.length-index*5)/100);
+    });
 }
 
-function eidoToIrl(eido) {
-    var m = (eido.h * 60.0) + (eido.m * 1.0) + (eido.s/60.0);
-    return {h:0, m:0, s:0};
-}
-
-function irlToEido(irl) {
-
-}
-
-function getCurrentEidoTime(now) {
-    var time = now.getTime() / 1000;
-    var start_time = (eido_timestamp - 150 * 60);
-    var irltime_m = ((time - start_time)/60) % 150;  // 100m of day + 50m of night
-    var eidotime_in_h = (irltime_m / 6.25) + 6;
-    if (eidotime_in_h < 0) eidotime_in_h += 24;
-    if (eidotime_in_h > 24) eidotime_in_h -= 24;
-    var eidotime_h = Math.floor(eidotime_in_h);
-    var eidotime_m = Math.floor((eidotime_in_h * 60) % 60);
-    var eidotime_s = Math.floor((eidotime_in_h * 60 * 60) % 60);
-    return { h:eidotime_h, m:eidotime_m, s:eidotime_s };
+// Given a now and current minutes, calculates the next local times a night starts
+function calculateNextIrlDayNightTimes(now, minutes) {
+    var nextNights = [];
+    var nextNightStart = new moment(now);
+    nextNightStart.add(moment.duration(150-minutes, 'minutes'));
+    nextNights.push(nextNightStart);
+    for(var i=0; i<10; ++i) {
+        nextNightStart = new moment(nextNightStart).add(moment.duration(150, 'minutes'));
+        nextNights.push(nextNightStart);
+    }
+    return nextNights;
 }
 
 function updateTime() {
-    if (debug) {
-        console.log('foo');
+    if (paused) {
+        return;
     }
     
 	if (scaled_layout) {
@@ -230,36 +226,18 @@ function updateTime() {
 		$('.cycles-sidebar').css('opacity', 0);
     }
     
-    var now = new Date();
-    
-    var time = now.getTime() / 1000;
-    // This time is the end of night and start of day
-    var start_time = (eido_timestamp - 150 * 60)
-    var irltime_m = ((time - start_time)/60) % 150;  // 100m of day + 50m of night
-    var eidotime_in_h = (irltime_m / 6.25) + 6;
-    if (eidotime_in_h < 0) eidotime_in_h += 24;
-    if (eidotime_in_h > 24) eidotime_in_h -= 24;
-    var eidotime_h = Math.floor(eidotime_in_h);
-    var eidotime_m = Math.floor((eidotime_in_h * 60) % 60);
-    var eidotime_s = Math.floor((eidotime_in_h * 60 * 60) % 60);
-
-
-    var eidoTime = getCurrentEidoTime(now);
-    var irlTime = eidoToIrl(eidoTime);
-    
-
-    // wrapped_time is the current eidolon time in hours as percentage of hours
-    var wrapped_time = (eidoTime.h - 5) + (eidoTime.m / 60) + (eidoTime.s / 3600);
-    if (wrapped_time < 0) wrapped_time += 24;
-    var slider_percent = wrapped_time / 24 * 90 + 5
-    $('.slider').css('top', slider_percent + '%');
+    var now = new moment();
+    var time = now.unix();
+    // irlstart_s time is the start time of the day/night cycle that we originally retrieved from the API
+    // it is an epoch time (in seconds)
+    // TODO: Why not just use the activation time instead of the expiry time from the API?
+    var irlstart_s = (eido_timestamp - 150 * 60)
+    // irltime_m is how many real minutes we are into the current day/night cycle
+    var irltime_m = ((time - irlstart_s)/60) % 150;  // 100m of day + 50m of night
 
     var next_interval;
-
-    // console.log('irl_m', irltime_m, irlTime.m, eidoTime);
-
-    // Night is from 9pm to 5am
-    // Day is from 5am to 9pm
+    // Night is from 9pm to 5am, eidotime
+    // Day is from 5am to 9pm, eidotime
     if (150 - irltime_m > 50) {
         if (!has_played_day) {
             has_played_night = false;
@@ -267,11 +245,11 @@ function updateTime() {
             if (first_run) {
                 first_run = false;
             } else {
-                // Emit a custom event when the time changes. Allows lots of things to be wired up to this unique event
-                $(document).trigger('clock-event', { cycle: 'day' });
-                // TODO: Can now wire this up to the event
                 notify("It is day!");
             }
+
+            // Emit a custom event when the time changes. Allows lots of things to be wired up to this unique event
+            $(document).trigger('clock-event', { cycle: 'day', minutes: irltime_m });
         }
         // Time is day
         if (nice_background) {
@@ -291,11 +269,12 @@ function updateTime() {
             if (first_run) {
                 first_run = false;
             } else {
-                // Emit a custom event when the time changes. Allows lots of things to be wired up to this unique event
-                $(document).trigger('clock-event', { cycle: 'night' });
                 notify("It is night!");
                 eidolon_sound.play();
             }
+            
+            // Emit a custom event when the time changes. Allows lots of things to be wired up to this unique event
+            $(document).trigger('clock-event', { cycle: 'night', minutes: irltime_m });
         }
         if (nice_background) {
             $('body').css('background', "url(night_blur.jpg) no-repeat center center fixed");
@@ -307,39 +286,46 @@ function updateTime() {
         $('.day').text('day');
         next_interval = 5;
     }
-    $('body').css('background-size', "cover");
 
+    // update the irl timer
+    var irl_until_in_m = 150 - irltime_m;
+    if (irl_until_in_m > 50) irl_until_in_m -= 50 
+    var irl_until_h = Math.floor(irl_until_in_m / 60);
+    var irl_until_m = Math.floor(irl_until_in_m % 60);
+    var irl_until_s = Math.floor((irl_until_in_m * 60) % 60);
+
+    $('.time>.big-hour').text(pad(irl_until_h));
+    $('.time>.big-minute').text(pad(irl_until_m));
+    $('.time>.big-second').text(pad(irl_until_s));
+
+    // update the current eidotime
+    var eidotime_in_h = (irltime_m / 6.25) + 6;
+    if (eidotime_in_h < 0) eidotime_in_h += 24;
+    if (eidotime_in_h > 24) eidotime_in_h -= 24;
+    var eidotime_h = Math.floor(eidotime_in_h);
+    var eidotime_m = Math.floor((eidotime_in_h * 60) % 60);
+    var eidotime_s = Math.floor((eidotime_in_h * 60 * 60) % 60);
+
+    $('.eidolon .hour').text(pad(eidotime_h));
+    $('.eidolon .minute').text(pad(eidotime_m));
+    $('.eidolon .second').text(pad(eidotime_s));
+
+    // Update the eido time until
     if (eidotime_h == 22) has_notified = false;
     var eido_until_h = next_interval - (eidotime_h % 24);
     if (eido_until_h < 0) eido_until_h += 24
     var eido_until_m = 60 - eidotime_m;
     var eido_until_s = 60 - eidotime_s;
 
-    var irl_until_in_h = ((eido_until_h + eido_until_m / 60 + eido_until_s / 60 / 60) * 6.25) / 60;
-
-    var irl_until_in_m = 150 - irltime_m;
-
-    if (irl_until_in_m > 50) irl_until_in_m -= 50 
-
-    var irl_until_h = Math.floor(irl_until_in_m / 60);
-    var irl_until_m = Math.floor(irl_until_in_m % 60);
-    var irl_until_s = Math.floor((irl_until_in_m * 60) % 60);
-
-    // var irl_until_h = Math.floor(irl_until_in_h);
-    // var irl_until_m = Math.floor((irl_until_in_h * 60) % 60);
-    // var irl_until_s = Math.floor((irl_until_in_h * 60 * 60) % 60);
-    
-    $('.time>.big-hour').text(pad(irl_until_h));
-    $('.time>.big-minute').text(pad(irl_until_m));
-    $('.time>.big-second').text(pad(irl_until_s));
-
-    $('.eidolon .hour').text(pad(eidotime_h));
-    $('.eidolon .minute').text(pad(eidotime_m));
-    $('.eidolon .second').text(pad(eidotime_s));
-
     $('.irl .hour').text(pad(eido_until_h));
     $('.irl .minute').text(pad(eido_until_m));
     $('.irl .second').text(pad(eido_until_s));
+
+    // update the slider along the line
+    var wrapped_time = eidotime_in_h - 5;
+    if (wrapped_time < 0) wrapped_time += 24;
+    var slider_percent = wrapped_time / 24 * 90 + 5
+    $('.slider').css('top', slider_percent + '%');
 
     // $('.time>.ampm').text(((eidotime_in_h >= 12) ? ' pm' : ' am'));
 }

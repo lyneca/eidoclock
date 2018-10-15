@@ -208,7 +208,7 @@ a:hover {
 	padding: 0 10px;
 	text-align: left;
 	width: 30%;
-	height: 50%;
+	height: 70%;
 }
 
 .cycles-sidebar .timeline {
@@ -244,12 +244,16 @@ a:hover {
 	border-bottom: 5px solid transparent;
 }
 
-.future-day-start,
+.future-night-label,
 .future-night-start {
 	position: absolute;
 	left: 30px;
 	background-color: transparent;
 }
+.future-night-label {
+	top: 5%;
+}
+
 
 @media (min-width:320px)  {
 	/* smartphones, iPhone, portrait 480x320 phones */
