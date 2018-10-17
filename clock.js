@@ -18,10 +18,26 @@ function pauseclock(enabled) {
     paused = enabled;
 }
 
+function calculateIrlMinutes(eido) {
+    var now = new moment();
+    var time = now.unix();
+    // irlstart_s time is the start time of the day/night cycle that we originally retrieved from the API
+    // it is an epoch time (in seconds)
+    // TODO: Why not just use the activation time instead of the expiry time from the API?
+    var irlstart_s = (eido_timestamp - 150 * 60)
+    // irltime_m is how many real minutes we are into the current day/night cycle
+    var irltime_m = ((time - irlstart_s)/60) % 150;  // 100m of day + 50m of night
+    return irltime_m;
+}
+
 function defaultGetTimeCallback(t)
 {
     eido_timestamp = t;
-    console.log(eido_timestamp);
+
+    // Calculate the time and fire the event to set our initial day
+    // TODO: dont need this?
+    // var irltime_m = calculateIrlMinutes(eido_timestamp);
+    // $(document).trigger('clock-event', { cycle: 150 - irltime_m > 50 ? 'day' : 'night', minutes: irltime_m});
 }
 
 getCetusTime(1, defaultGetTimeCallback);
@@ -83,9 +99,8 @@ $(function() {
 
 // Register for a custom event
 $(document).on("clock-event", function(event, data) {
-    console.log("It is now", data.cycle);
-    var now = new moment();
-    updateNextIrlDayNightTimes(now, data.minutes);
+    console.log("It is now", data.cycle, data.minutes, data.eido);
+    updateNextIrlDayNightTimes(new moment(), data.minutes);
 });
 
 var eidolon_sound = new Audio('eidolon.mp3');
@@ -200,12 +215,21 @@ function updateNextIrlDayNightTimes(now, minutes) {
 function calculateNextIrlDayNightTimes(now, minutes) {
     var nextNights = [];
     var nextNightStart = new moment(now);
-    nextNightStart.add(moment.duration(150-minutes, 'minutes'));
-    nextNights.push(nextNightStart);
-    for(var i=0; i<10; ++i) {
+    
+    // The night starts 100 minutes into a day
+    nextNightStart.add(moment.duration(100-minutes, 'minutes'));
+    
+    // Only include the next night if its in the future. 
+    // e.g. if its night time right now, dont include when the current night started
+    if (nextNightStart.isAfter())
+        nextNights.push(nextNightStart);
+
+    // Now add all of the future nights, 11 day/night cycles will put us approx 24hrs out
+    for(var i=nextNights.length; i<11; ++i) {
         nextNightStart = new moment(nextNightStart).add(moment.duration(150, 'minutes'));
         nextNights.push(nextNightStart);
     }
+
     return nextNights;
 }
 
@@ -226,14 +250,7 @@ function updateTime() {
 		$('.cycles-sidebar').css('opacity', 0);
     }
     
-    var now = new moment();
-    var time = now.unix();
-    // irlstart_s time is the start time of the day/night cycle that we originally retrieved from the API
-    // it is an epoch time (in seconds)
-    // TODO: Why not just use the activation time instead of the expiry time from the API?
-    var irlstart_s = (eido_timestamp - 150 * 60)
-    // irltime_m is how many real minutes we are into the current day/night cycle
-    var irltime_m = ((time - irlstart_s)/60) % 150;  // 100m of day + 50m of night
+    var irltime_m = calculateIrlMinutes(eido_timestamp);
 
     var next_interval;
     // Night is from 9pm to 5am, eidotime
@@ -245,11 +262,10 @@ function updateTime() {
             if (first_run) {
                 first_run = false;
             } else {
+                // Emit a custom event when the time changes. Allows lots of things to be wired up to this unique event
+                $(document).trigger('clock-event', { cycle: 'day', minutes: irltime_m, eido: eido_timestamp });
                 notify("It is day!");
             }
-
-            // Emit a custom event when the time changes. Allows lots of things to be wired up to this unique event
-            $(document).trigger('clock-event', { cycle: 'day', minutes: irltime_m });
         }
         // Time is day
         if (nice_background) {
@@ -269,12 +285,11 @@ function updateTime() {
             if (first_run) {
                 first_run = false;
             } else {
+                // Emit a custom event when the time changes. Allows lots of things to be wired up to this unique event
+                $(document).trigger('clock-event', { cycle: 'night', minutes: irltime_m, eido: eido_timestamp });
                 notify("It is night!");
                 eidolon_sound.play();
             }
-            
-            // Emit a custom event when the time changes. Allows lots of things to be wired up to this unique event
-            $(document).trigger('clock-event', { cycle: 'night', minutes: irltime_m });
         }
         if (nice_background) {
             $('body').css('background', "url(night_blur.jpg) no-repeat center center fixed");
