@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<link href='style.css' rel='stylesheet'>
 	<script src='jquery-3.3.1.min.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js'></script>
 	<script src='clock.js'></script>
 	<title>Plains of Eidolon Clock</title>
 </head>
@@ -21,6 +22,15 @@
 		<div class="option">
 			<span class="option-switch">
 				<label class="switch">
+					<input type="checkbox" checked="true" id="cycles">
+					<span class="knob round"></span>
+				</label>
+			</span>
+			<span class="option-text">Future Nights</span>
+		</div>
+		<div class="option">
+			<span class="option-switch">
+				<label class="switch">
 					<input type="checkbox" checked="true" id="scale">
 					<span class="knob round"></span>
 				</label>
@@ -28,7 +38,15 @@
 			<span class="option-text">Show scaled time</span>
 		</div>
 	</div>
-	<div class="sidebar">
+	
+	<div class="cycles-sidebar">
+		<div class="marker"></div>
+		<div class="future-night-label">Future Nights</div>
+		<div class="future-night-start"></div>
+		<div class="timeline"></div>
+	</div>
+
+	<div class="current-sidebar">
 		<div class="slider"></div>
 		<div class="day-start">
 			Day starts
