@@ -3,20 +3,15 @@ var nice_background = true;
 var daynight_cycles = true;
 var scaled_layout = false;
 var eido_timestamp = 1510884902;
-var paused = false;
 
 var interval;
 
 const PRETTY_KEY = "PRETTY_KEY";
 const CYCLES_KEY = "CYCLES_KEY";
 const SCALED_KEY = "SCALE";
-const SCALED_TIME_INTERVAL = 10;
+const SCALED_TIME_INTERVAL = 1;
 const NO_SCALED_TIME_INTERVAL = 100;
 const WARNING_MESSAGE = "Warning: unable to get time. Retrying soon.";
-
-function pauseclock(enabled) {
-    paused = enabled;
-}
 
 function calculateIrlMinutes(eido) {
     var now = new moment();
@@ -228,9 +223,6 @@ function calculateNextIrlDayNightTimes(now, minutes) {
 }
 
 function updateTime() {
-    if (paused) {
-        return;
-    }
     
 	if (scaled_layout) {
 		$('.until-container').css('opacity', 1);
