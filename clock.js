@@ -30,14 +30,8 @@ function calculateIrlMinutes(eido) {
     return irltime_m;
 }
 
-function defaultGetTimeCallback(t)
-{
+function defaultGetTimeCallback(t) {
     eido_timestamp = t;
-
-    // Calculate the time and fire the event to set our initial day
-    // TODO: dont need this?
-    // var irltime_m = calculateIrlMinutes(eido_timestamp);
-    // $(document).trigger('clock-event', { cycle: 150 - irltime_m > 50 ? 'day' : 'night', minutes: irltime_m});
 }
 
 getCetusTime(1, defaultGetTimeCallback);
@@ -218,7 +212,7 @@ function calculateNextIrlDayNightTimes(now, minutes) {
     
     // The night starts 100 minutes into a day
     nextNightStart.add(moment.duration(100-minutes, 'minutes'));
-    
+
     // Only include the next night if its in the future. 
     // e.g. if its night time right now, dont include when the current night started
     if (nextNightStart.isAfter())
