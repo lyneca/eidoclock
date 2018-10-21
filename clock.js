@@ -256,6 +256,7 @@ function updateTime() {
         // Time is day
         if (nice_background) {
             $('body').css('background', "url(day_blur.jpg) no-repeat center center fixed");
+            $('body').css('background-size', "cover");
         } else {
             $('body').css('background-image', "none");
             $('body').css('background-color', "black");
@@ -279,6 +280,7 @@ function updateTime() {
         }
         if (nice_background) {
             $('body').css('background', "url(night_blur.jpg) no-repeat center center fixed");
+            $('body').css('background-size', "cover");
         } else {
             $('body').css('background', "black");
             $('body').css('color', "white");
