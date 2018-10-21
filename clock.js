@@ -83,7 +83,6 @@ $(function() {
     });
 
     interval = setInterval(updateTime, scaled_layout == true ? SCALED_TIME_INTERVAL : NO_SCALED_TIME_INTERVAL);
-    $('body').css('background-size', "cover");
 })
 
 // Register for a custom event
