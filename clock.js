@@ -83,7 +83,6 @@ $(function() {
     });
 
     interval = setInterval(updateTime, scaled_layout == true ? SCALED_TIME_INTERVAL : NO_SCALED_TIME_INTERVAL);
-    $('body').css('background-size', "cover");
 })
 
 // Register for a custom event
@@ -255,7 +254,7 @@ function updateTime() {
         }
         // Time is day
         if (nice_background) {
-            $('body').css('background', "url(day_blur.jpg) no-repeat center center fixed");
+            $('body').css('background-image', "url(day_blur.jpg)");
         } else {
             $('body').css('background-image', "none");
             $('body').css('background-color', "black");
@@ -278,9 +277,9 @@ function updateTime() {
             }
         }
         if (nice_background) {
-            $('body').css('background', "url(night_blur.jpg) no-repeat center center fixed");
+            $('body').css('background-image', "url(night_blur.jpg)");
         } else {
-            $('body').css('background', "black");
+            $('body').css('background-image', "none");
             $('body').css('color', "white");
         }
         $('.night').addClass('day').removeClass('night');
