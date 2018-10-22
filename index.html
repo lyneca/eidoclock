@@ -2,14 +2,43 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<link href='jqueryui/jquery-ui.min.css' rel='stylesheet'>
+	<link href='jqueryui/jquery-ui.structure.min.css' rel='stylesheet'>
+	<link href='jqueryui/jquery-ui.theme.min.css' rel='stylesheet'>
+	<link href='jqueryui/jquery-ui.min.css' rel='stylesheet'>
 	<link href='style.css' rel='stylesheet'>
+
 	<script src='jquery-3.3.1.min.js'></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js'></script>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<script src='clock.js'></script>
 	<title>Plains of Eidolon Clock</title>
 </head>
 <body>
-	<div class="about">
+	<div id="dialog" title="Set Custom Alarm">
+		<p class="ui-prompt">How soon before night, would you like to be notified?</p>
+		<span class="option-text">Minutes:</span>
+		<span class="ui-spinner ui-corner-all ui-widget ui-widget-content">
+			<input tabindex="-1" id="spinner" autocomplete="off" class="ui-spinner-input" role="spinbutton" aria-valuenow="0" type="number" step="1">
+			<a tabindex="-1" aria-hidden="true" class="ui-button ui-widget ui-spinner-button ui-spinner-up ui-corner-tr ui-button-icon-only" role="button">
+				<span class="ui-button-icon ui-icon ui-icon-triangle-1-n"></span>
+				<span class="ui-button-icon-space"> </span>
+			</a>
+			<a tabindex="-1" aria-hidden="true" class="ui-button ui-widget ui-spinner-button ui-spinner-down ui-corner-br ui-button-icon-only" role="button">
+				<span class="ui-button-icon ui-icon ui-icon-triangle-1-s"></span>
+				<span class="ui-button-icon-space"></span>
+			</a>
+		</span>
+	</div>
+
+	<div class="blurble about">
+		<div class="option">
+			<span class="option-switch">
+				<i id="alarm-icon" class="material-icons md-24">alarm</i>
+			</span>
+			<span id="alarm-label" class="option-text">Custom Alarm</span>
+		</div>
 		<div class="option">
 			<span class="option-switch">
 				<label class="switch">
@@ -39,14 +68,14 @@
 		</div>
 	</div>
 	
-	<div class="cycles-sidebar">
+	<div class="blurble cycles-sidebar">
 		<div class="marker"></div>
 		<div class="future-night-label">Future Nights</div>
 		<div class="future-night-start"></div>
 		<div class="timeline"></div>
 	</div>
 
-	<div class="current-sidebar">
+	<div class="blurble current-sidebar">
 		<div class="slider"></div>
 		<div class="day-start">
 			Day starts
@@ -59,7 +88,7 @@
 		</div>
 		<div class="timeline"></div>
 	</div>
-	<div class="container">
+	<div class="blurble container">
 		<div class="time-container">
 			<h1>Time until <span class="night">night</span></h1>
 			<span class="time">
