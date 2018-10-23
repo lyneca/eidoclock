@@ -383,13 +383,13 @@ input:checked + .knob:before {
 }
 
 .ui-widget-content {
-	background-color: #11111100;
+	background-color: #11111133;
 	background: none;
 }
 
 .ui-dialog {
 	background: none;
-	background-color: #11111111;
+	background-color: #11111133;
 }
 
 .is-blurred {

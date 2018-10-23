@@ -28,7 +28,7 @@ function calculateIrlMinutes(eido) {
 }
 
 function defaultGetTimeCallback(t) {
-    eido_timestamp = 1540185119;
+    eido_timestamp = t;
 }
 
 getCetusTime(1, defaultGetTimeCallback);
@@ -56,7 +56,7 @@ $(function() {
 
         b = localStorage.getItem(SCALED_KEY);
         scaled_layout = b === "false" ? false : true;
-        
+
         $('#background').prop('checked', nice_background);
 
         $('#cycles').prop('checked', daynight_cycles);
