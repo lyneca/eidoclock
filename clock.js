@@ -3,11 +3,13 @@ var nice_background = true;
 var daynight_cycles = true;
 var scaled_layout = false;
 var eido_timestamp = 1510884902;
-
+var alarm;
+var alarmed = false;
 var interval;
 
 const PRETTY_KEY = "PRETTY_KEY";
 const CYCLES_KEY = "CYCLES_KEY";
+const ALARM_KEY  = "ALARM_KEY";
 const SCALED_KEY = "SCALE";
 const SCALED_TIME_INTERVAL = 1;
 const NO_SCALED_TIME_INTERVAL = 100;
@@ -56,8 +58,16 @@ $(function() {
         scaled_layout = b === "false" ? false : true;
 
         $('#background').prop('checked', nice_background);
+
         $('#cycles').prop('checked', daynight_cycles);
+        $('.cycles-sidebar').css('opacity', daynight_cycles ? 1 : 0);
+
         $('#scale').prop('checked', scaled_layout);
+        $('.until-container').css('opacity', scaled_layout ? 1 : 0);
+
+        // Load the custom alarm value from local storage
+        alarm = localStorage.getItem(ALARM_KEY);
+        $('#spinner').val(alarm);
     }
 
     $('#background').on('click', function(){
@@ -68,6 +78,7 @@ $(function() {
 
     $('#cycles').on('click', function(){
         daynight_cycles = $('#cycles').is(':checked');
+        $('.cycles-sidebar').css('opacity', daynight_cycles ? 1 : 0);
         if(typeof(Storage) !== "undefined")
             localStorage.setItem(CYCLES_KEY, daynight_cycles == true ? "true" : "false");
     });
@@ -80,14 +91,58 @@ $(function() {
         // Adjust interval rate on a simple layout so the CPU is used less.
         clearInterval(interval);
         interval = setInterval(updateTime, scaled_layout == true ? SCALED_TIME_INTERVAL : NO_SCALED_TIME_INTERVAL);
+
+        // Update the visibility
+        $('.until-container').css('opacity', scaled_layout ? 1 : 0);
+    });
+
+    // Define our alarm modal
+    $("#dialog").dialog({
+        autoOpen: false, // start closed
+        width: 368,
+        close: function() {
+            // on close, clear the blur
+            $('.blurble').removeClass('is-blurred');
+        },
+        buttons: [{
+            text: "Save",
+            click: function() {
+                // on save, trigger an alarm changed event, clear the blur, and close the modal
+                $(document).trigger('alarm-changed', { minutes: $("#spinner").val() });
+                $('.blurble').removeClass('is-blurred');
+                $( this ).dialog( "close" );
+            }
+        }]
+    });
+
+    // Wire up the alarm icon. Turn on blur and open the modal
+    $('#alarm-icon').on('click', function() {
+        $('.blurble').addClass('is-blurred');
+        $("#dialog").dialog("open");
     });
 
     interval = setInterval(updateTime, scaled_layout == true ? SCALED_TIME_INTERVAL : NO_SCALED_TIME_INTERVAL);
 })
 
+$(document).on("alarm-changed", function(event, data) {
+    // When the alarm value changes, update local storage
+    if(typeof(Storage) !== "undefined")
+        localStorage.setItem(ALARM_KEY, data.minutes);
+});
+
+$(document).on("alarm-event", function(event, data) {
+    alarmed = true;
+    notify('Alarm!');
+});
+
 // Register for a custom event
 $(document).on("clock-event", function(event, data) {
     console.log("It is now", data.cycle, data.minutes, data.eido);
+    
+    // reset the alarm when it becomes night
+    if (data.cycle === 'night')
+        alarmed = false;
+
     updateNextIrlDayNightTimes(new moment(), data.minutes);
 });
 
@@ -223,19 +278,12 @@ function calculateNextIrlDayNightTimes(now, minutes) {
 
 function updateTime() {
     
-	if (scaled_layout) {
-		$('.until-container').css('opacity', 1);
-	} else {
-		$('.until-container').css('opacity', 0);
-    }
-    
-    if (daynight_cycles) {
-		$('.cycles-sidebar').css('opacity', 1);
-	} else {
-		$('.cycles-sidebar').css('opacity', 0);
-    }
-    
     var irltime_m = calculateIrlMinutes(eido_timestamp);
+
+    // console.log(irltime_m);
+    if (100-irltime_m < alarm && !alarmed) {
+        $(document).trigger('alarm-event');
+    }
 
     var next_interval;
     // Night is from 9pm to 5am, eidotime

@@ -369,3 +369,70 @@ input:checked + .knob:before {
 	float: left;
 }
 
+#alarm-icon {
+	margin-left: 10px;
+	cursor: pointer;
+}
+
+#alarm-label {
+	margin-left: 16px;
+}
+
+.ui-widget-header {
+	border: 1px solid black;
+}
+
+.ui-widget-content {
+	background-color: #11111133;
+	background: none;
+}
+
+.ui-dialog {
+	background: none;
+	background-color: #11111133;
+}
+
+.is-blurred {
+	filter: blur(5px);
+	-webkit-filter: blur(5px);
+}
+
+.ui-spinner {
+	width: 200px;
+	margin-left: 10px;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+    text-align: left;
+    border-width: 1px 0 0 0;
+    background-image: none;
+    margin-top: .5em;
+	padding: .3em 1em .5em .4em;
+}
+
+.ui-prompt {
+	padding: 10px;
+	border-radius: 4px
+}
+
+.ui-dialog .ui-dialog-buttonpane, {
+	margin: 0px;
+	padding: 0.5em;
+}
+
+.ui-dialog .ui-dialog-buttonpane button {
+	margin: 0px;
+	padding: 0.25em 0.5em;
+}
+
+.ui-prompt,
+.ui-spinner,
+.ui-dialog .ui-dialog-buttonpane button,
+.ui-dialog-titlebar {
+	background: none;
+    background-color: #111111aa;
+}
+
+.ui-button {
+	background: none;
+}
