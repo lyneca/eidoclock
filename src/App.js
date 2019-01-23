@@ -26,7 +26,7 @@ class App extends React.Component {
     componentDidMount() {
         this.interval = setInterval(
             () => this.tick(),
-            10
+            2000
         );
     }
 

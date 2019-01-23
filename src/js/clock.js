@@ -1,5 +1,6 @@
 import moment from 'moment';
 import axios from 'axios';
+import request from 'request';
 
 var lastSync = 0;
 var syncTimeout = 60000;
@@ -8,10 +9,12 @@ var expiryTime = 0;
 var hasLoaded = false;
 
 const WORLDSTATE_URL = 'http://content.warframe.com/dynamic/worldState.php';
-const CORS_URL = 'https://api.allorigins.ml/get?callback=?&url=' + encodeURIComponent(WORLDSTATE_URL);
+const CORS_URL = 'https://cors-anywhere.herokuapp.com/' + WORLDSTATE_URL;
+
+axios.defaults.withCredentials = true;
 
 moment.updateLocale('en', {
-    longDateFormat : {
+    longDateFormat: {
         LT: 'HH:mm A',
         LTS: 'HH:mm:ss A',
         L: 'MM/DD/YYYY',
@@ -33,14 +36,15 @@ function pad(n) {
 
 function getTimeFromWorldstate() {
     lastSync = moment.now().valueOf();
-    axios.get(CORS_URL)
-        .then(response => {
-            var expiryTimeMS = response.data['SyndicateMissions'].find(
-                element => (element['Tag'] === 'CetusSyndicate')
-            )['Expiry']['$date']['$numberLong'];
-            expiryTime = parseInt(expiryTimeMS);
-            hasLoaded = true;
-        });
+    request.get(CORS_URL, {json: true}, function (err, res, body) {
+        console.log(body)
+        var data = body;
+        var expiryTimeMS = data['SyndicateMissions'].find(
+            element => (element['Tag'] === 'CetusSyndicate')
+        )['Expiry']['$date']['$numberLong'];
+        expiryTime = parseInt(expiryTimeMS);
+        hasLoaded = true;
+    });
 }
 
 // Get the 'cetus syndicate mission expiry time' from Warframe's servers,
@@ -49,9 +53,9 @@ function getExpiryTime() {
     if (moment.now() >= expiryTime) {
         expiryTime += 150 * 60 * 1000;
         getTimeFromWorldstate();
-    }
-    if (moment.now().valueOf() - lastSync >= syncTimeout) {
+    } else if (moment.now().valueOf() - lastSync >= syncTimeout) {
         // Resync from server
+        lastSync = moment.now().valueOf();
         getTimeFromWorldstate();
     }
     return expiryTime;
@@ -87,7 +91,7 @@ function getNthNight(n) {
 
 // Return a list of the next n night times
 function getNextNightTimes(n) {
-    return Array.from({length: n}, (x, i) => i)
+    return Array.from({ length: n }, (x, i) => i)
         .map(x => moment(getNthNight(x)).calendar());
 }
 
