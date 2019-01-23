@@ -5,12 +5,29 @@ var lastSync = 0;
 var syncTimeout = 60000;
 var expiryTime = 0;
 
+var hasLoaded = false;
+
 const WORLDSTATE_URL = 'http://content.warframe.com/dynamic/worldState.php';
+
+moment.updateLocale('en', {
+    longDateFormat : {
+        LT: 'HH:mm A',
+        LTS: 'HH:mm:ss A',
+        L: 'MM/DD/YYYY',
+        l: 'M/D/YYYY',
+        LL: 'MMMM Do YYYY',
+        ll: 'MMM D YYYY',
+        LLL: 'MMMM Do YYYY LT',
+        lll: 'MMM D YYYY LT',
+        LLLL: 'dddd, MMMM Do YYYY LT',
+        llll: 'ddd, MMM D YYYY LT'
+    }
+});
 
 function pad(n) {
     if (n.toString().length == 1)
         return '0' + n.toString();
-    return n
+    return n;
 }
 
 function getTimeFromWorldstate() {
@@ -21,15 +38,17 @@ function getTimeFromWorldstate() {
                 element => (element['Tag'] === 'CetusSyndicate')
             )['Expiry']['$date']['$numberLong'];
             expiryTime = parseInt(expiryTimeMS);
-            console.log(expiryTime);
-            console.log(moment.now().valueOf());
-        })
-        .catch(response => console.log(response));
+            hasLoaded = true;
+        });
 }
 
 // Get the 'cetus syndicate mission expiry time' from Warframe's servers,
 //  or from a cached version
 function getExpiryTime() {
+    if (moment.now() >= expiryTime) {
+        expiryTime += 150 * 60 * 1000;
+        getTimeFromWorldstate();
+    }
     if (moment.now().valueOf() - lastSync >= syncTimeout) {
         // Resync from server
         getTimeFromWorldstate();
@@ -61,13 +80,22 @@ function msToHMS(ms) {
     return h + ':' + m + ':' + s;
 }
 
+function getNthNight(n) {
+    return getExpiryTime() - (50 * 60 * 1000) + (150 * 60 * 1000) * n;
+}
+
 // Return a list of the next n night times
-function getNextNightTimes() {
-    return [];
+function getNextNightTimes(n) {
+    return Array.from({length: n}, (x, i) => i)
+        .map(x => moment(getNthNight(x)).calendar());
 }
 
 function getFormattedTime() {
+    if (!hasLoaded) {
+        getTimeUntilNextEvent();
+        return '--:--:--';
+    }
     return msToHMS(getTimeUntilNextEvent());
 }
 
-export default getFormattedTime;
+export { getFormattedTime, getNextNightTimes };

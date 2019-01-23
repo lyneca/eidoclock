@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 var has_notified = false;
 var nice_background = true;
 var daynight_cycles = true;
@@ -194,7 +196,7 @@ function updateNextIrlDayNightTimes(now, minutes) {
     // Add the new ones
     nextNights.forEach(function(element, index, array) {
         var id = 'next-night-' + index;
-        $('.cycles-sidebar>.future-night-label').after('<div id='' + id + '' class='future-night-start'>' + element.format('MMM DD, h:mm a') + '</div>');
+        $('.cycles-sidebar>.future-night-label').after('<div id=\'' + id + '\' class=\'future-night-start\'>' + element.format('MMM DD, h:mm a') + '</div>');
         $('#' + id).css('top', ((index+1)*8+5)  + '%').css('opacity', (100+array.length-index*5)/100);
     });
 }

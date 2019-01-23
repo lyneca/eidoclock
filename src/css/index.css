@@ -10,7 +10,44 @@
     src: url('../fonts/inconsolata.ttf');
 }
 
+body {
+}
+
+.clock, .nights-container {
+    padding: 15px;
+    /* box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2); */
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    display: block;
+    margin: 10px;
+    width: 250px;
+}
+
 .clock {
 	font-family: "Open Sans";
 	font-size: 50px;
+    text-align: center;
+}
+
+.nights-container {
+}
+
+.nights {
+    padding-right: 10px;
+    margin-top: 10px;
+    border-right: 1px solid #dddddd;
+}
+
+.nights-header {
+    font-family: "Open Sans";
+    font-size: 30px;
+    text-align: center;
+    border-bottom: 1px solid #dddddd;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+.night-time {
+	font-family: "Inconsolata";
+    text-align: right;
 }

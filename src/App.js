@@ -1,5 +1,5 @@
 import React from 'react';
-import getFormattedTime from './js/clock.js';
+import { getFormattedTime, getNextNightTimes } from './js/clock.js';
 import { clearInterval } from 'timers';
 
 class App extends React.Component {
@@ -7,13 +7,15 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            time: getFormattedTime()
+            time: getFormattedTime(),
+            nights: getNextNightTimes(10)
         };
     }
 
     tick() {
         this.setState({
-            time: getFormattedTime()
+            time: getFormattedTime(),
+            nights: getNextNightTimes(10)
         });
     }
 
@@ -30,7 +32,10 @@ class App extends React.Component {
 
     render() {
         return (
-            <Clock time={this.state.time} />
+            <div>
+                <Clock time={this.state.time} />
+                <NextNights nights={this.state.nights} />
+            </div>
         );
     }
 }
@@ -39,6 +44,25 @@ function Clock(props) {
     return (
         <div className='clock'>
             {props.time}
+        </div>
+    );
+}
+
+function NextNights(props) {
+    return (
+        <div className='nights-container'>
+            <div className='nights-header'>
+                Upcoming Nights
+            </div>
+            <div className='nights'>
+                {
+                    props.nights.map(
+                        (time, index) => (
+                            <div key={index} className='night-time'>{time}</div>
+                        )
+                    )
+                }
+            </div>
         </div>
     );
 }
