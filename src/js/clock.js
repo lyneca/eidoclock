@@ -91,8 +91,8 @@ $(document).on("clock-event", function(event, data) {
     updateNextIrlDayNightTimes(new moment(), data.minutes);
 });
 
-var eidolon_sound = new Audio('eidolon.mp3');
-var door_sound = new Audio('door.wav');
+var eidolon_sound = new Audio('src/sounds/eidolon.mp3');
+var door_sound = new Audio('src/sounds/door.wav');
 // eidolon_sound.play()
 var has_played_night = false;
 var has_played_day = false;
@@ -254,7 +254,7 @@ function updateTime() {
         }
         // Time is day
         if (nice_background) {
-            $('body').css('background-image', "url(day_blur.jpg)");
+            $('body').css('background-image', "url(src/img/day_blur.jpg)");
         } else {
             $('body').css('background-image', "none");
             $('body').css('background-color', "black");
@@ -277,7 +277,7 @@ function updateTime() {
             }
         }
         if (nice_background) {
-            $('body').css('background-image', "url(night_blur.jpg)");
+            $('body').css('background-image', "url(src/img/night_blur.jpg)");
         } else {
             $('body').css('background-image', "none");
             $('body').css('color', "white");

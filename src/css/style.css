@@ -2,12 +2,12 @@
 
 @font-face {
     font-family: "Open Sans";
-    src: url('open_sans.woff2');
+    src: url('../fonts/open_sans.woff2');
 }
 
 @font-face {
     font-family: "Inconsolata";
-    src: url('./inconsolata.ttf');
+    src: url('../fonts/inconsolata.ttf');
 }
 
 html, body {
