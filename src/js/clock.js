@@ -8,7 +8,7 @@ var expiryTime = 0;
 var hasLoaded = false;
 
 const WORLDSTATE_URL = 'http://content.warframe.com/dynamic/worldState.php';
-const CORS_URL = 'https://whatever-origin.herokuapp.com/get?callback=?&url=' + encodeURIComponent(WORLDSTATE_URL);
+const CORS_URL = 'https://api.allorigins.ml/get?callback=?&url=' + encodeURIComponent(WORLDSTATE_URL);
 
 moment.updateLocale('en', {
     longDateFormat : {
