@@ -6,12 +6,12 @@ var eido_timestamp = 1510884902;
 
 var interval;
 
-const PRETTY_KEY = "PRETTY_KEY";
-const CYCLES_KEY = "CYCLES_KEY";
-const SCALED_KEY = "SCALE";
+const PRETTY_KEY = 'PRETTY_KEY';
+const CYCLES_KEY = 'CYCLES_KEY';
+const SCALED_KEY = 'SCALE';
 const SCALED_TIME_INTERVAL = 1;
 const NO_SCALED_TIME_INTERVAL = 100;
-const WARNING_MESSAGE = "Warning: unable to get time. Retrying soon.";
+const WARNING_MESSAGE = 'Warning: unable to get time. Retrying soon.';
 
 function calculateIrlMinutes(eido) {
     var now = new moment();
@@ -38,22 +38,22 @@ document.addEventListener('DOMContentLoaded', function () {
     return;
   }
 
-  if (Notification.permission !== "granted")
+  if (Notification.permission !== 'granted')
     Notification.requestPermission();
 });
 
 // Configure local storage events and time interval adjustment on simple event.
 $(function() {
-    if(typeof(Storage) !== "undefined")
+    if(typeof(Storage) !== 'undefined')
     {
         var b = localStorage.getItem(PRETTY_KEY);
-        nice_background = b === "false" ? false : true;
+        nice_background = b === 'false' ? false : true;
 
         b = localStorage.getItem(CYCLES_KEY);
-        daynight_cycles = b === "false" ? false : true;
+        daynight_cycles = b === 'false' ? false : true;
 
         b = localStorage.getItem(SCALED_KEY);
-        scaled_layout = b === "false" ? false : true;
+        scaled_layout = b === 'false' ? false : true;
 
         $('#background').prop('checked', nice_background);
         $('#cycles').prop('checked', daynight_cycles);
@@ -62,20 +62,20 @@ $(function() {
 
     $('#background').on('click', function(){
         nice_background = $('#background').is(':checked');
-        if(typeof(Storage) !== "undefined")
-            localStorage.setItem(PRETTY_KEY, nice_background == true ? "true" : "false");
+        if(typeof(Storage) !== 'undefined')
+            localStorage.setItem(PRETTY_KEY, nice_background == true ? 'true' : 'false');
     });
 
     $('#cycles').on('click', function(){
         daynight_cycles = $('#cycles').is(':checked');
-        if(typeof(Storage) !== "undefined")
-            localStorage.setItem(CYCLES_KEY, daynight_cycles == true ? "true" : "false");
+        if(typeof(Storage) !== 'undefined')
+            localStorage.setItem(CYCLES_KEY, daynight_cycles == true ? 'true' : 'false');
     });
 
     $('#scale').on('click', function(){
         scaled_layout = $('#scale').is(':checked');
-        if(typeof(Storage) !== "undefined")
-            localStorage.setItem(SCALED_KEY, scaled_layout == true ? "true" : "false");
+        if(typeof(Storage) !== 'undefined')
+            localStorage.setItem(SCALED_KEY, scaled_layout == true ? 'true' : 'false');
 
         // Adjust interval rate on a simple layout so the CPU is used less.
         clearInterval(interval);
@@ -86,8 +86,8 @@ $(function() {
 })
 
 // Register for a custom event
-$(document).on("clock-event", function(event, data) {
-    console.log("It is now", data.cycle, data.minutes, data.eido);
+$(document).on('clock-event', function(event, data) {
+    console.log('It is now', data.cycle, data.minutes, data.eido);
     updateNextIrlDayNightTimes(new moment(), data.minutes);
 });
 
@@ -99,7 +99,7 @@ var has_played_day = false;
 var first_run = true;
 
 function notify(string) {
-  if (Notification.permission !== "granted")
+  if (Notification.permission !== 'granted')
     Notification.requestPermission();
   else {
     var notification = new Notification('The Eidoclock', {
@@ -109,8 +109,8 @@ function notify(string) {
   }
 }
 function pad(s) {
-	if (s.toString().length == 1) return '0' + s.toString();
-	return s.toString();
+    if (s.toString().length == 1) return '0' + s.toString();
+    return s.toString();
 }
 
 /**
@@ -119,14 +119,14 @@ function pad(s) {
  */
 function setTimeFailure(hasIssue)
 {
-    var e = document.getElementById("warning-container");
+    var e = document.getElementById('warning-container');
     if(hasIssue)
     {
         e.innerHTML = WARNING_MESSAGE;
         setTimeout(getCetusTime, 30000, true, defaultGetTimeCallback);
     }
     else
-        e.innerHTML = "";
+        e.innerHTML = '';
 }
 
 // Credit to Wampa842 for this
@@ -136,37 +136,37 @@ function setTimeFailure(hasIssue)
 // On success, the time is passed to the callback function. On any error, the callback will receive the static timestamp and a warning is logged.
 function getCetusTime(fetch, callback)
 {
-	var timestamp = 1522764301;	//Static timestamp to be returned in case of an error. Correct as of 2018-04-03, for PC version 22.17.0.1. Might not be accurate in the future.
-	if(!fetch)
-	{
-		callback(timestamp);
-		return;
-	}
+    var timestamp = 1522764301;	//Static timestamp to be returned in case of an error. Correct as of 2018-04-03, for PC version 22.17.0.1. Might not be accurate in the future.
+    if(!fetch)
+    {
+        callback(timestamp);
+        return;
+    }
 
-	var worldStateFileUrl = "http://content.warframe.com/dynamic/worldState.php";
+    var worldStateFileUrl = 'http://content.warframe.com/dynamic/worldState.php';
 
-	var worldStateCORSUrl = "https://whatever-origin.herokuapp.com/get?callback=?&url=" + encodeURIComponent(worldStateFileUrl);
+    var worldStateCORSUrl = 'https://whatever-origin.herokuapp.com/get?callback=?&url=' + encodeURIComponent(worldStateFileUrl);
 
-	$.ajax(
-	{
-		url: worldStateCORSUrl,
-		dataType: "json",
-		mimeType: "application/json",
-		success: function(data)
-		{
-			var worldStateData;
-			try
-			{
-				worldStateData = JSON.parse(data.contents); //The data is returned as a string inside a JSON response and has to be parsed.
-			}
-			catch(e)
-			{
-				console.warn("Could not fetch Cetus time (", e.message, "). Using static timestamp. Accuracy not guaranteed.");
+    $.ajax(
+    {
+        url: worldStateCORSUrl,
+        dataType: 'json',
+        mimeType: 'application/json',
+        success: function(data)
+        {
+            var worldStateData;
+            try
+            {
+                worldStateData = JSON.parse(data.contents); //The data is returned as a string inside a JSON response and has to be parsed.
+            }
+            catch(e)
+            {
+                console.warn('Could not fetch Cetus time (', e.message, '). Using static timestamp. Accuracy not guaranteed.');
                 callback(timestamp);
                 setTimeFailure(true);
-				return;
+                return;
             }
-            var syndicate = worldStateData["SyndicateMissions"].find(element => (element["Tag"] == "CetusSyndicate"));
+            var syndicate = worldStateData['SyndicateMissions'].find(element => (element['Tag'] == 'CetusSyndicate'));
             if(syndicate == undefined)
             {
                 setTimeFailure(true);
@@ -174,17 +174,17 @@ function getCetusTime(fetch, callback)
                 return;
             }
             setTimeFailure(false);
-			timestamp = Math.floor(syndicate["Expiry"]["$date"]["$numberLong"] / 1000);	//The activation time, converted to whole seconds
-			console.log("Fetched Cetus time: ", timestamp);
-			callback(timestamp);
-		},
-		failure: function(xhr, status, error)
-		{
-            console.warn("Cound not fetch Cetus time:", status, error, ". Using static timestamp. Accuracy not guaranteed.");
+            timestamp = Math.floor(syndicate['Expiry']['$date']['$numberLong'] / 1000);	//The activation time, converted to whole seconds
+            console.log('Fetched Cetus time: ', timestamp);
+            callback(timestamp);
+        },
+        failure: function(xhr, status, error)
+        {
+            console.warn('Cound not fetch Cetus time:', status, error, '. Using static timestamp. Accuracy not guaranteed.');
             setTimeFailure(true);
-			callback(timestamp);
-		}
-	});
+            callback(timestamp);
+        }
+    });
 }
 
 function updateNextIrlDayNightTimes(now, minutes) {
@@ -194,7 +194,7 @@ function updateNextIrlDayNightTimes(now, minutes) {
     // Add the new ones
     nextNights.forEach(function(element, index, array) {
         var id = 'next-night-' + index;
-        $('.cycles-sidebar>.future-night-label').after('<div id="' + id + '" class="future-night-start">' + element.format('MMM DD, h:mm a') + '</div>');
+        $('.cycles-sidebar>.future-night-label').after('<div id='' + id + '' class='future-night-start'>' + element.format('MMM DD, h:mm a') + '</div>');
         $('#' + id).css('top', ((index+1)*8+5)  + '%').css('opacity', (100+array.length-index*5)/100);
     });
 }
@@ -223,16 +223,16 @@ function calculateNextIrlDayNightTimes(now, minutes) {
 
 function updateTime() {
     
-	if (scaled_layout) {
-		$('.until-container').css('opacity', 1);
-	} else {
-		$('.until-container').css('opacity', 0);
+    if (scaled_layout) {
+        $('.until-container').css('opacity', 1);
+    } else {
+        $('.until-container').css('opacity', 0);
     }
     
     if (daynight_cycles) {
-		$('.cycles-sidebar').css('opacity', 1);
-	} else {
-		$('.cycles-sidebar').css('opacity', 0);
+        $('.cycles-sidebar').css('opacity', 1);
+    } else {
+        $('.cycles-sidebar').css('opacity', 0);
     }
     
     var irltime_m = calculateIrlMinutes(eido_timestamp);
@@ -249,15 +249,15 @@ function updateTime() {
             } else {
                 // Emit a custom event when the time changes. Allows lots of things to be wired up to this unique event
                 $(document).trigger('clock-event', { cycle: 'day', minutes: irltime_m, eido: eido_timestamp });
-                notify("It is day!");
+                notify('It is day!');
             }
         }
         // Time is day
         if (nice_background) {
-            $('body').css('background-image', "url(src/img/day_blur.jpg)");
+            $('body').css('background-image', 'url(src/img/day_blur.jpg)');
         } else {
-            $('body').css('background-image', "none");
-            $('body').css('background-color', "black");
+            $('body').css('background-image', 'none');
+            $('body').css('background-color', 'black');
         }
         $('.day').addClass('night').removeClass('day');
         $('.night').text('night');
@@ -272,15 +272,15 @@ function updateTime() {
             } else {
                 // Emit a custom event when the time changes. Allows lots of things to be wired up to this unique event
                 $(document).trigger('clock-event', { cycle: 'night', minutes: irltime_m, eido: eido_timestamp });
-                notify("It is night!");
+                notify('It is night!');
                 eidolon_sound.play();
             }
         }
         if (nice_background) {
-            $('body').css('background-image', "url(src/img/night_blur.jpg)");
+            $('body').css('background-image', 'url(src/img/night_blur.jpg)');
         } else {
-            $('body').css('background-image', "none");
-            $('body').css('color', "white");
+            $('body').css('background-image', 'none');
+            $('body').css('color', 'white');
         }
         $('.night').addClass('day').removeClass('night');
         $('.day').text('day');
