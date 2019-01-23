@@ -1,0 +1,16 @@
+/* @import url('https://fonts.googleapis.com/css?family=Open+Sans:300|Open:100|Inconsolata:400'); */
+
+@font-face {
+    font-family: "Open Sans";
+    src: url('../fonts/open_sans.woff2');
+}
+
+@font-face {
+    font-family: "Inconsolata";
+    src: url('../fonts/inconsolata.ttf');
+}
+
+.clock {
+	font-family: "Open Sans";
+	font-size: 50px;
+}
