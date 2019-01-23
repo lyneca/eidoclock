@@ -8,6 +8,7 @@ var expiryTime = 0;
 var hasLoaded = false;
 
 const WORLDSTATE_URL = 'http://content.warframe.com/dynamic/worldState.php';
+const CORS_URL = 'https://whatever-origin.herokuapp.com/get?callback=?&url=' + encodeURIComponent(WORLDSTATE_URL);
 
 moment.updateLocale('en', {
     longDateFormat : {
@@ -32,7 +33,7 @@ function pad(n) {
 
 function getTimeFromWorldstate() {
     lastSync = moment.now().valueOf();
-    axios.get(WORLDSTATE_URL)
+    axios.get(CORS_URL)
         .then(response => {
             var expiryTimeMS = response.data['SyndicateMissions'].find(
                 element => (element['Tag'] === 'CetusSyndicate')
