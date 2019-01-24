@@ -12,6 +12,9 @@ var hasLoaded = false;
 const WORLDSTATE_URL = 'http://content.warframe.com/dynamic/worldState.php';
 const CORS_URL = 'https://cors-anywhere.herokuapp.com/' + WORLDSTATE_URL;
 
+// eslint-disable-next-line no-console
+console.log('Clock of Eidolon v2.1');
+
 moment.updateLocale('en', {
     longDateFormat: {
         LT: 'HH:mm A',
