@@ -2,7 +2,7 @@
   "name": "eidoclock",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://lyneca.github.io/eidoclock-test",
+  "homepage": "https://clockofeidolon.com/",
   "dependencies": {
     "axios": "^0.18.0",
     "eslint-plugin-react": "^7.12.4",
