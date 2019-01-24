@@ -4,7 +4,6 @@
   "private": true,
   "homepage": "https://clockofeidolon.com/",
   "dependencies": {
-    "eslint": "^5.12.1",
     "eslint-plugin-react": "^7.12.4",
     "moment": "^2.24.0",
     "react": "^16.7.0",
