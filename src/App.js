@@ -6,9 +6,10 @@ import day from './img/day.png';
 import evening from './img/evening.png';
 import night from './img/night.png';
 import black from './img/black.png';
+import icon_192 from './img/icon_192.png';
+import icon_512 from './img/icon_512.png';
 
 class App extends React.Component {
-
     constructor(props) {
         super(props);
         getWorldState();
@@ -101,8 +102,8 @@ function NextNights(props) {
 function About(props) {
     return (
         <div className="about">
-			Made by <a href="https://reddit.com/u/lyneca">/u/lyneca</a> and <a href="https://github.com/lyneca/eidoclock/graphs/contributors">others</a><br/>
-			Hosted on <a href="https://github.com/lyneca/eidoclock">GitHub</a><br/>
+            Made by <a href="https://reddit.com/u/lyneca">/u/lyneca</a> and <a href="https://github.com/lyneca/eidoclock/graphs/contributors">others</a><br/>
+            Hosted on <a href="https://github.com/lyneca/eidoclock">GitHub</a><br/>
         </div>
     );
 }
