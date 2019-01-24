@@ -46,14 +46,16 @@ function getWorldState() {
             }
             hasLoaded = true;
         });
-    } else return worldState;
+    }
+    return worldState;
 }
 
-function getTimeFromWorldState() {
+function getTimeFromWorldState(waitForNew) {
     var expiryTimeMS = worldState['SyndicateMissions'].find(
         element => (element['Tag'] === 'CetusSyndicate')
     )['Expiry']['$date']['$numberLong'];
-    expiryTime = parseInt(expiryTimeMS);
+    if (waitForNew && parseInt(expiryTimeMS) != expiryTime - (150 * 60 * 1000))
+        expiryTime = parseInt(expiryTimeMS);
 }
 
 // Get the 'cetus syndicate mission expiry time' from Warframe's servers,
@@ -61,7 +63,7 @@ function getTimeFromWorldState() {
 function getExpiryTime() {
     if (moment.now().valueOf() >= expiryTime) {
         expiryTime += 150 * 60 * 1000;
-        getTimeFromWorldState();
+        getTimeFromWorldState(true);
     } else if (moment.now().valueOf() - lastSync >= syncTimeout) {
         // Resync from server
         lastSync = moment.now().valueOf();
