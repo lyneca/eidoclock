@@ -60,6 +60,9 @@ body, html, #root {
     bottom: 20%;
     width: 300px;
     margin-left: -150px;
+    /* background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.2)); */
+    background-color: rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 0 8px 3px rgba(0, 0, 0, 0.2);
 }
 
 .nights {
@@ -125,5 +128,6 @@ body, html, #root {
 
     .nights-container {
         margin-top: 50px;
+        background-image: none;
     }
 }

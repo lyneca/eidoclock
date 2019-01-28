@@ -78,7 +78,7 @@ function Clock(props) {
 }
 
 function NextNights(props) {
-    var opacities = props.nights.map((_, index) => {return {opacity: 0.5 * ((10-index)/10) + 0.5};});
+    // var opacities = props.nights.map((_, index) => {return {opacity: 0.5 * ((10-index)/10) + 0.5};});
 
     return (
         <div className='nights-container'>
@@ -99,7 +99,7 @@ function NextNights(props) {
     );
 }
 
-function About(props) {
+function About() {
     return (
         <div className="about">
             Made by <a href="https://reddit.com/u/lyneca">/u/lyneca</a> and <a href="https://github.com/lyneca/eidoclock/graphs/contributors">others</a><br/>

@@ -110,7 +110,7 @@ function getNextNightTimes(n) {
         .map(x => moment(getNthNight(x)).calendar());
 }
 
-function isDay(n) {
+function isDay() {
     if (!hasLoaded) return true;
     var timeUntilDay = getTimeUntilDay();
     if (timeUntilDay > (50 * 60 * 1000))
