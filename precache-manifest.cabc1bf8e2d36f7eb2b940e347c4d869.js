@@ -40,7 +40,7 @@ self.__precacheManifest = [
     "url": "/static/media/inconsolata.29b00ebc.ttf"
   },
   {
-    "revision": "60aeb512b18e64aae7e2f0a005d4588a",
+    "revision": "2d530e8079e97be260fd5b4bce556120",
     "url": "/index.html"
   }
 ];
