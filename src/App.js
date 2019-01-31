@@ -1,5 +1,5 @@
 import React from 'react';
-import { getFormattedTime, getNextNightTimes, getQuarter, isDay, getWorldState } from './js/clock.js';
+import { getFormattedTime, getNextNightTimes, getQuarter, isDay } from './js/clock.js';
 import { clearInterval } from 'timers';
 import morning from './img/morning.png';
 import day from './img/day.png';
@@ -8,11 +8,11 @@ import night from './img/night.png';
 import black from './img/black.png';
 import icon_192 from './img/icon_192.png';
 import icon_512 from './img/icon_512.png';
+import cry from './sounds/eidolon.mp3';
 
 class App extends React.Component {
     constructor(props) {
         super(props);
-        getWorldState();
         this.backgrounds = [
             morning,
             day,
@@ -22,11 +22,21 @@ class App extends React.Component {
         ];
         this.state = {
             time: getFormattedTime(),
-            nights: getNextNightTimes(10)
+            nights: getNextNightTimes(10),
+            wasNight: true
         };
+        this.audio = new Audio(cry);
     }
 
     tick() {
+        if (!this.state.wasNight && !isDay()) {
+            // Just turned night - reeeeeeee
+            this.audio.play();
+            this.setState({wasNight: true});
+
+        } else if (isDay()) {
+            this.setState({wasNight: false});
+        }
         this.setState({
             time: getFormattedTime(),
             nights: getNextNightTimes(10),
@@ -35,10 +45,6 @@ class App extends React.Component {
             },
             day_night: isDay() ? 'night' : 'day'
         });
-    }
-
-    updateWorldState() {
-        getWorldState();
     }
 
     componentWillUnmount() {
@@ -50,10 +56,6 @@ class App extends React.Component {
         this.tickInterval = setInterval(
             () => this.tick(),
             500
-        );
-        this.worldStateInterval = setInterval(
-            () => this.updateWorldState(),
-            60 * 1000
         );
     }
 

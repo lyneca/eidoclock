@@ -3,17 +3,15 @@ import request from 'request';
 
 var lastSync = 0;
 var syncTimeout = 60000;
+var displayExpiryTime = 0;
 var expiryTime = 0;
 
-var worldState = {};
-
 var hasLoaded = false;
+var syncing = false;
 
-const WORLDSTATE_URL = 'http://content.warframe.com/dynamic/worldState.php';
-const CORS_URL = 'https://cors-anywhere.herokuapp.com/' + WORLDSTATE_URL;
+/* eslint-disable no-console */
 
-// eslint-disable-next-line no-console
-console.log('Clock of Eidolon v2.1');
+console.log('Clock of Eidolon v2.3');
 
 moment.updateLocale('en', {
     longDateFormat: {
@@ -36,43 +34,33 @@ function pad(n) {
     return n;
 }
 
-function getWorldState() {
-    if (moment.now().valueOf() - lastSync >= syncTimeout) {
+function syncTimeFromFirebase() {
+    if (syncing) return;
+    if (moment.now().valueOf() - lastSync >= syncTimeout || !expiryTime) {
+        syncing = true;
         lastSync = moment.now().valueOf();
-        request.get(CORS_URL, { json: true }, function (err, res, body) {
-            if (err || typeof body == 'string') {
-                worldState = window.localStorage.getItem('worldState');
-                if (worldState) worldState = JSON.parse(worldState);
-            } else {
-                worldState = body;
-                window.localStorage.setItem('worldState', JSON.stringify(worldState));
+        request.get('https://us-central1-eidoclock.cloudfunctions.net/getTime', { json: true }, function (err, res, body) {
+            if (err) console.error(err);
+            if (expiryTime != body.expiryDate) {
+                expiryTime = body.expiryDate;
+                window.localStorage.setItem('expiryTime', expiryTime);
+                hasLoaded = true;
             }
-            hasLoaded = true;
+            syncing = false;
         });
     }
-    return worldState;
-}
-
-function getTimeFromWorldState(waitForNew) {
-    var expiryTimeMS = worldState['SyndicateMissions'].find(
-        element => (element['Tag'] === 'CetusSyndicate')
-    )['Expiry']['$date']['$numberLong'];
-    if (waitForNew && parseInt(expiryTimeMS) != expiryTime - (150 * 60 * 1000))
-        expiryTime = parseInt(expiryTimeMS);
 }
 
 // Get the 'cetus syndicate mission expiry time' from Warframe's servers,
 //  or from a cached version
 function getExpiryTime() {
+    syncTimeFromFirebase();
     if (moment.now().valueOf() >= expiryTime) {
-        expiryTime += 150 * 60 * 1000;
-        getTimeFromWorldState(true);
-    } else if (moment.now().valueOf() - lastSync >= syncTimeout) {
-        // Resync from server
-        lastSync = moment.now().valueOf();
-        getTimeFromWorldState();
+        displayExpiryTime = expiryTime + 150 * 60 * 1000;
+    } else {
+        displayExpiryTime = expiryTime;
     }
-    return expiryTime;
+    return displayExpiryTime;
 }
 
 // Get the time until the next dawn
@@ -129,9 +117,10 @@ function getQuarter() {
 
 function getFormattedTime() {
     if (!hasLoaded) {
+        syncTimeFromFirebase();
         return '--:--:--';
     }
     return msToHMS(getTimeUntilNextEvent());
 }
 
-export { getFormattedTime, getNextNightTimes, isDay, getQuarter, getWorldState };
+export { getFormattedTime, getNextNightTimes, isDay, getQuarter };
