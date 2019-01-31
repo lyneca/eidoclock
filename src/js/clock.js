@@ -11,7 +11,7 @@ var syncing = false;
 
 /* eslint-disable no-console */
 
-console.log('Clock of Eidolon v2.3');
+console.info('Clock of Eidolon v2.4.0');
 
 moment.updateLocale('en', {
     longDateFormat: {
