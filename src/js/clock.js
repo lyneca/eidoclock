@@ -39,7 +39,7 @@ function syncTimeFromFirebase() {
     if (moment.now().valueOf() - lastSync >= syncTimeout || !expiryTime) {
         syncing = true;
         lastSync = moment.now().valueOf();
-        request.get('https://us-central1-eidoclock.cloudfunctions.net/getTime', { json: true }, function (err, res, body) {
+        request.get('https://djb37x93fe.execute-api.eu-west-2.amazonaws.com/prod/time', { json: true }, function (err, res, body) {
             if (err) console.error(err);
             if (expiryTime != body.expiryDate) {
                 expiryTime = body.expiryDate;
