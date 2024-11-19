@@ -5,7 +5,7 @@
   "homepage": "https://clockofeidolon.com/",
   "dependencies": {
     "eslint-plugin-react": "^7.12.4",
-    "firebase": "^5.8.1",
+    "firebase": "^10.9.0",
     "moment": "^2.24.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
